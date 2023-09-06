@@ -1,0 +1,22 @@
+@media screen and (max-width: 640px) {
+    #sidebar {
+        display: none;
+
+        &.open {
+            display: block;
+            width: 17rem;
+        }
+    }
+
+    .form-name {
+        font-size: 14px;
+    }
+
+    .subject-line {
+        font-size: 14px;
+    }
+
+    #main.details-open #mails {
+        display: none;
+    }
+}
