@@ -22,7 +22,7 @@ return new class extends Migration
             $table->longText('message')->nullable();
             $table->string('ip', 30);
             $table->foreignId('domain_id')->constrained('domains');
-            $table->string('labels', 255)->default(json_encode(['inbox', 'new', 'unread']));
+            $table->string('labels', 255)->default("inbox,unread");
             $table->timestamps();
         });
     }

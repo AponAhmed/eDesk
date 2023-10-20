@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Settings;
+use App\Utilities\GmailApi;
+use Exception;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
@@ -14,8 +16,37 @@ class SettingsController extends Controller
      */
     public function index()
     {
-        //
+        $gmailApi = new GmailApi();
+
+
+        if ($gmailApi->get2Redirect()) {
+            return redirect(url()->current());
+        }
+        return view('settings', ['gmail' => $gmailApi, 'Settings' => Settings::class]);
     }
+
+    function AuthLogout()
+    {
+        try {
+            //code...
+            Settings::remove('gmailApiToken');
+            return response()->json(['error' => false, 'message' => 'Successfully logged out']);
+        } catch (Exception $e) {
+            //throw $th;
+            return response()->json(['error' => true, 'message' => $e->getMessage()]);
+        }
+    }
+
+    function UpdateSettings(Request $request)
+    {
+        if ($request->has('settings')) {
+            $settings = $request->get('settings');
+            foreach ($settings as $key => $value) {
+                Settings::set($key, $value);
+            }
+        }
+    }
+
 
     /**
      * Show the form for creating a new resource.

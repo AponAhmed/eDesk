@@ -1,0 +1,32 @@
+.tab-wrap {
+    display: flex;
+    flex-direction: column;
+
+    ul {
+        list-style: none;
+
+        li {
+            font-weight: 500;
+            color: #999;
+        }
+
+        li.active {
+            border-bottom: 1px solid #22d3ee;
+            color: #666;
+
+        }
+    }
+
+    .tab-contents-wrap {
+        display: flex;
+        flex-direction: column;
+
+        .tab-pan {
+            display: none;
+        }
+
+        .tab-pan.active {
+            display: block;
+        }
+    }
+}

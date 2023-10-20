@@ -16,7 +16,7 @@ class DomainController extends Controller
     public function index()
     {
         // Retrieve a list of domains and display them using a specific view.
-        $domains = Domain::all();
+        $domains = Domain::orderBy('id', 'desc')->get();
         return view('domains.index', ['domains' => $domains]);
     }
 

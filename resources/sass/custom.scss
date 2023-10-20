@@ -3,6 +3,8 @@ body {
 }
 
 svg {
+    pointer-events: none;
+
     path {
         color: inherit;
     }
@@ -44,8 +46,21 @@ svg {
 
 .mail-list {
     scrollbar-width: thin;
+    cursor: pointer;
 }
 
+.colapse-able.hidden.block {
+    display: block !important;
+}
+
+.unread.mail-list * {
+    font-weight: 600;
+}
+
+.unread.mail-list {
+    font-weight: 600;
+    background: rgba(0, 255, 0, 0.05);
+}
 
 #sidebar.open {
     @apply w-48;
@@ -112,6 +127,132 @@ svg {
 .mail-details {
     display: none;
     width: 0;
+    height: 100%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.message-header {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid #eee;
+}
+
+.header-subject {
+    font-size: 18px;
+    font-weight: 600;
+    color: #555;
+    display: flex;
+    align-items: center;
+}
+
+.from-details * {
+    line-height: 1;
+}
+
+.close-view-button {
+    display: flex;
+    width: 28px;
+    padding: 2px 3px;
+    margin-right: 10px;
+    border: 1px solid #eee;
+    border-radius: 2px;
+}
+
+.rotate-y-180 {
+    transform: rotateY(180deg);
+}
+
+.close-view-button:hover {
+    background: #ececec;
+    border-color: #ddd;
+}
+
+.message-body {
+    padding: 16px;
+    height: calc(100% - 70px);
+    box-sizing: border-box;
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
+.from-details {
+    position: relative;
+
+    .actions {
+        position: absolute;
+        right: 5px;
+        bottom: -3px;
+        display: flex;
+        align-items: center;
+
+        .btn-action {
+            border: 1px solid rgba(0, 0, 0, .1);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            line-height: 0;
+            font-size: 14px;
+            padding-bottom: 5px;
+
+            svg {
+                pointer-events: none;
+            }
+
+            &:hover {
+                background: #93edfb;
+            }
+        }
+
+        .btn-action .working {
+            height: 15px;
+            width: 22px;
+        }
+
+        .btn-action .working::after {
+            left: 12px;
+            top: 3px;
+            border: 1px solid #22d3ee;
+            background: transparent;
+        }
+
+        .btn-action .working::before {
+            left: 2px;
+            top: 3px;
+            border: 1px solid #f00;
+            background: transparent;
+        }
+
+        .sender-info {
+            margin-left: 10px;
+            transition: all .1s ease-in;
+
+            svg {
+                color: #169eb3;
+                fill: #169eb3;
+            }
+
+            &:hover {
+                scale: 1.3;
+            }
+
+            .working {
+                width: 19px;
+                height: 19px;
+            }
+
+            .working::before {
+                left: 5px;
+                background: #cef8ff;
+            }
+
+            .working::after {
+                left: 5px;
+                background: #087e91;
+            }
+        }
+    }
 }
 
 #main.details-open {
@@ -137,8 +278,8 @@ svg {
 
     .mail-details {
         display: flex;
-        background: #f9f9f9;
         flex-grow: 1;
+        flex-direction: column;
     }
 }
 
@@ -203,4 +344,8 @@ input[type="text"] {
 
 .sep>*:first-child::after {
     display: none;
+}
+
+.settings-input-container {
+    height: calc(100% - 48px);
 }

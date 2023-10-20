@@ -17,6 +17,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'checkbox.scss';
+@import 'confirm.scss';
+@import 'tab.scss';
 @import 'popup.scss';
 @import 'custom.scss';
 @import 'responsive.scss';

@@ -8,7 +8,7 @@
                 class="popup create-button px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-full shadow-sm ml-4">New
                 Domain</a>
         </div>
-        <div class="table-wraper overflow-x-auto">
+        <div class="table-wraper overflow-x-auto bg-white p-4">
             <table>
                 <thead>
                     <tr>

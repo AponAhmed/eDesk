@@ -13,9 +13,9 @@ class UsersTableSeeder extends Seeder
     {
         // Create a default admin user
         User::create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'), // Hash the password
+            'name' => 'SiATEX',
+            'email' => 'siatex@siatex.com',
+            'password' => Hash::make('1qazxsw2'), // Hash the password
         ]);
 
         // Create additional users if needed

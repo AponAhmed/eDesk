@@ -48,17 +48,19 @@
                     <div id="header" class="p-1 flex justify-between border-b border-solid border-gray-100">
                         @include('partials.header')
                     </div>
-                    <main id="main" class="p-2 h-full ox-h flex  relative">
+                    <main id="main" class="p-2 h-full ox-h flex  relative bg-gray-100">
                         {{-- details-open --}}
                         @if (Session::has('success'))
-                            <div class="absolute top-0 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"
+                            <div id="success-message"
+                                class="absolute top-0 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"
                                 role="alert">
                                 <span class="block sm:inline">{{ Session::get('success') }}</span>
                             </div>
                         @endif
 
                         @if (Session::has('error'))
-                            <div class="absolute top-40 right-32 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
+                            <div id="error-message"
+                                class="absolute top-40 right-32 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
                                 role="alert">
                                 <span class="block sm:inline">{{ Session::get('error') }}</span>
                             </div>

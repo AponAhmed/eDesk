@@ -11,7 +11,10 @@ class Message extends Model
     protected $fillable = [
         'name', 'ip', 'email', 'whatsapp', 'subject', 'message', 'domain_id', 'labels'
     ];
-
+    // Cast the 'labels' field to an array
+    protected $casts = [
+        'labels' => 'json',
+    ];
 
     /**
      * Validation rules.
@@ -51,27 +54,58 @@ class Message extends Model
         return $snippet;
     }
 
+
     /**
-     * Accessor: Decode the 'labels' attribute as JSON when retrieving it.
+     * Add a label to the 'labels' field.
      *
-     * @param mixed $value
-     * @return array
+     * @param string $label
+     * @return void
      */
-    public function getLabelsAttribute($value)
+    public function addLabel($label)
     {
-        return json_decode($value, true);
+        $labels = $this->getLabels();
+        $labels[] = $label;
+        $this->updateLabels($labels);
+        return $this;
     }
 
     /**
-     * Mutator: Encode the 'labels' attribute as JSON when setting it.
+     * Remove a label from the 'labels' field.
      *
-     * @param mixed $value
+     * @param string $label
      * @return void
      */
-    public function setLabelsAttribute($value)
+    public function removeLabel($label)
     {
-        $this->attributes['labels'] = json_encode($value);
+        $labels = $this->getLabels();
+
+        $labels = array_diff($labels, [$label]);
+        $this->updateLabels($labels);
+        return $this;
     }
+
+    /**
+     * Get the 'labels' field as an array.
+     *
+     * @return array
+     */
+    public function getLabels()
+    {
+        $labels = $this->labels ? explode(',', $this->labels) : [];
+        return array_filter(array_unique($labels));
+    }
+
+    /**
+     * Update the 'labels' field with the given array of labels.
+     *
+     * @param array $labels
+     * @return void
+     */
+    public function updateLabels(array $labels)
+    {
+        $this->update(['labels' => implode(',', $labels)]);
+    }
+
 
     /**
      * Create a new message.
@@ -116,5 +150,29 @@ class Message extends Model
     public static function getMessagesByDomain($domainId)
     {
         return self::where('domain_id', $domainId)->get();
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+        // Format the created_at timestamp as per your desired format
+        return \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s');
+    }
+
+
+    function senderData()
+    {
+        $url = "http://ip-api.com/json/$this->ip";
+        $content = file_get_contents($url);
+        $ob = json_decode($content);
+        return $ob;
+    }
+
+    function country()
+    {
+        //?fields=country,city,lat,lon
+        $ob = $this->senderData();
+        if (isset($ob->status) && $ob->status == 'success') {
+            return $ob->city . "," . $ob->country;
+        }
     }
 }

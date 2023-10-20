@@ -1,4 +1,4 @@
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 980px) {
     #sidebar {
         display: none;
 
@@ -8,6 +8,32 @@
         }
     }
 
+    #main.details-open #mails {
+        display: none;
+    }
+
+
+}
+
+@media screen and (max-width: 580px) {
+
+    .from-details .actions {
+        position: static;
+    }
+
+    .btn-action {
+        background: #d4f5fa;
+    }
+
+    .close-view-button {
+        border-color: rgba(255, 0, 0, .2);
+        background: rgba(255, 0, 0, .1);
+    }
+
+    //   .btn-action svg {
+    //     margin: 0;
+    //   }
+
     .form-name {
         font-size: 14px;
     }
@@ -16,7 +42,19 @@
         font-size: 14px;
     }
 
-    #main.details-open #mails {
-        display: none;
+
+    .header-subject h3 {
+        font-size: 15px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .from-details .actions .btn-action {
+        font-size: 0px !important;
+
+        svg {
+            margin-right: 0 !important;
+
+        }
     }
 }

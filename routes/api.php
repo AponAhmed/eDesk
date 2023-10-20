@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,7 +17,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/send', [ApiController::class, 'store'])->withoutMiddleware(['auth']);
-Route::get('/v', [ApiController::class, 'index']);
+//Mobile Application
+Route::get('/check-new/{id?}', [ApiController::class, 'check4New']);
 
 // Route::middleware('auth:sanctum')->group(function () {
 //     // Protected routes requiring authentication
