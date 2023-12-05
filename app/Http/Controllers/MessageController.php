@@ -215,6 +215,8 @@ class MessageController extends Controller
 
     function reply_send(Request $request)
     {
+        $cc = $request->get('reply_cc');
+
         if ($request->has('message_id') && $request->get('message') && !empty($request->get('message'))) {
             $message = Message::find($request->get('message_id'));
             $toRmail = $message->email;
@@ -234,6 +236,7 @@ class MessageController extends Controller
                 $gmail->SentBoxCustomLabel = Settings::get('after_reply_box_name', 'eDesk'); //
                 //Return path
                 $returnToStr = $request->get('return_to');
+
                 $return = explode(":", $returnToStr);
                 $AdminName = $return[0];
                 $AdminEmail = $return[1];
@@ -255,13 +258,12 @@ class MessageController extends Controller
                     'fromEmail' => $AdminEmail,
                     'toName' => $message->name,
                     'Return-Path' => $AdminEmail,
+                    'CC' => $cc,
                 ];
 
                 $replyMessage .= $previousBody;
                 //dd($replyMessage);
-
                 $gmail->send($toRmail, "Re: " . $message->subject, $replyMessage, $options);
-
                 $message->removeLabel('inbox')->addLabel('sent');
                 Session::flash('success', 'Message Succefully Sent.');
             } catch (Exception $e) {

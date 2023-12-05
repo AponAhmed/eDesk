@@ -10,7 +10,7 @@
 
     <div class="mb-1">
         <label class="block text-gray-700 text-sm font-bold mb-2" for="redirect_to">Return To</label>
-        <div class="relative flex items-center">
+        <div class="relative flex items-center mb-3">
             <select name="return_to"
                 class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
                 @foreach ($emails as $email => $name)
@@ -18,10 +18,15 @@
                         {{ $name }}&lt;{{ $email }}&gt;</option>
                 @endforeach
             </select>
-            <span class="text-gray-500 p-2 inline-block">or</span>
+            <span class="text-gray-500 p-2 inline-block">or </span>
             <input type="text" name="return_to_custom"
                 class="appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Email Address">
+        </div>
+        <div class="relative flex items-center">
+            <input type="text" name="reply_cc"
+                class="appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="CC">
         </div>
     </div>
 
