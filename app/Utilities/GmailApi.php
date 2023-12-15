@@ -153,7 +153,7 @@ class GmailApi
      * @param string $message Mail Body
      * @param Array $options Mail Sending options
      */
-    public function send($to, $subject = "", $message = "", $options = [])
+    public function send($to, $subject = "", $message = "", $options = [],$attachments=[])
     {
         $this->to = $to;
         $this->subject = $subject;
@@ -177,7 +177,7 @@ class GmailApi
         // Print the labels in the user's account.
         //FormEmail
         $FormEmail = !empty($options['fromEmail']) ? $options['fromEmail'] : "me";
-        $message =  $this->createMessage($FormEmail, $to, $subject, $message, $options);
+        $message =  $this->createMessage($FormEmail, $to, $subject, $message, $options,$attachments);
         //$draft = new Google_Service_Gmail_Draft();
         //$draft->setMessage($message);
         //$draft = $service->users_drafts->create('me', $draft);
@@ -250,10 +250,10 @@ class GmailApi
      * @param $messageText string email text
      * @return Message
      */
-    function createMessage($sender, $to, $subject, $messageText, $options)
+    function createMessage($sender, $to, $subject, $messageText, $options, $attach = [])
     {
         $message = new Message();
-        $rawMessageString = $this->createMessageMIME();
+        $rawMessageString = $this->createMessageMIME($attach);
         $rawMessage = strtr($rawMessageString, array('+' => '-', '/' => '_'));
         $message->setRaw($rawMessage);
         return $message;
@@ -263,7 +263,7 @@ class GmailApi
      * To Create MIME of Mail By PHPMailer
      *
      */
-    public function createMessageMIME()
+    public function createMessageMIME($attachments = [])
     {
         $mail = new \PHPMailer\PHPMailer\PHPMailer();
 
@@ -286,9 +286,18 @@ class GmailApi
         $mail->XMailer = "GmailAPI-MIME::PHPMailer";
         $mail->MessageID = "<" . md5('HELLO' . (idate("U") - 1000000000) . uniqid()) . "@gmail.com>";
 
+        if (count($attachments) > 0) {
+            foreach ($attachments as $attach) {
+                $mail->addAttachment($attach['path'], $attach['name']);
+            }
+        }
+
         $mail->isHTML(true);
         $mail->Subject = $this->subject;
         $mail->Body = $this->body;
+
+        //Attachment
+
         //Pre send to generate MIME
         $mail->preSend();
         $mime = $mail->getSentMIMEMessage();

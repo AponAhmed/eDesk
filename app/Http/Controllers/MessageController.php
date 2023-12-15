@@ -8,6 +8,7 @@ use App\Utilities\GmailApi;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Psy\VarDumper\Dumper;
 
 class MessageController extends Controller
 {
@@ -216,6 +217,28 @@ class MessageController extends Controller
     function reply_send(Request $request)
     {
         $cc = $request->get('reply_cc');
+        $attachment = [];
+        // Check if the request has files
+        if ($request->hasFile('attachments')) {
+            $files = $request->file('attachments');
+
+            foreach ($files as $file) {
+                // Get the original file name
+                $originalName = $file->getClientOriginalName();
+
+                // Move the uploaded file to a temporary storage directory
+                $tempPath = $file->storeAs('temp', $originalName);
+
+                // Get the full path of the stored file
+                $fullPath = storage_path("app/{$tempPath}");
+
+                // Add the file information to the array
+                $attachment[] = [
+                    'path' => $fullPath,
+                    'name' => $originalName,
+                ];
+            }
+        }
 
         if ($request->has('message_id') && $request->get('message') && !empty($request->get('message'))) {
             $message = Message::find($request->get('message_id'));
@@ -263,7 +286,7 @@ class MessageController extends Controller
 
                 $replyMessage .= $previousBody;
                 //dd($replyMessage);
-                $gmail->send($toRmail, "Re: " . $message->subject, $replyMessage, $options);
+                $gmail->send($toRmail, "Re: " . $message->subject, $replyMessage, $options, $attachment);
                 $message->removeLabel('inbox')->addLabel('sent');
                 Session::flash('success', 'Message Succefully Sent.');
             } catch (Exception $e) {

@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('reply') }}" class="ajx">
+<form method="POST" enctype='multipart/form-data' action="{{ route('reply') }}" class="ajx">
     @csrf
     <input type="hidden" name="message_id" value="{{ $id }}">
     <h3 class="text-lg font-light mb-4">Reply</h3>
@@ -32,4 +32,5 @@
 
     <button type="submit"
         class="button mt-4 px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-md shadow-sm">Send</button>
+    <input type="file" name="attachments[]" multiple id="attachments">
 </form>
