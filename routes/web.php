@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\DomainController;
+use App\Http\Controllers\ReplyController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingsController;
 
@@ -25,7 +26,10 @@ Auth::routes(['register' => false]);
 //Route::resource('messages', MessageController::class);
 Route::get('/', [MessageController::class, 'index'])->name('home');
 //Message Actions
-Route::post('/message', [MessageController::class, 'getMessage']); //details for the message
+Route::post('/replymonitor', [ReplyController::class, 'getMessage']); //details for the replied Message]
+Route::post('/release', [ReplyController::class, 'release']); //details for the replied Message]
+
+Route::post('/message', [MessageController::class, 'getMessage']); //details for the message]
 Route::post('/redirect', [MessageController::class, 'redirect_send'])->name('redirect'); //Redirect the message
 Route::post('/reply', [MessageController::class, 'reply_send'])->name('reply'); //Redirect the message
 Route::post('/modifi-labels', [MessageController::class, 'modifiLabels'])->name('labels.modify'); //Redirect the message
@@ -44,6 +48,7 @@ Route::get('/message/{id}/reply', [MessageController::class, 'reply'])->name('me
 
 
 Route::get('/messages/{status?}', [MessageController::class, 'index'])->name('messages.index');
+Route::get('/replies/{status?}', [ReplyController::class, 'index'])->name('messages.replies');
 // Catch-all route for the root URL
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 Route::get('/auth-logout', [SettingsController::class, 'AuthLogout']);

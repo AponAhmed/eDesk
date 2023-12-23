@@ -52,7 +52,7 @@
                         {{-- details-open --}}
                         @if (Session::has('success'))
                             <div id="success-message"
-                                class="absolute top-0 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"
+                                class="absolute z-10 top-0 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded"
                                 role="alert">
                                 <span class="block sm:inline">{{ Session::get('success') }}</span>
                             </div>
@@ -60,7 +60,7 @@
 
                         @if (Session::has('error'))
                             <div id="error-message"
-                                class="absolute top-40 right-32 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
+                                class="absolute z-10 top-40 right-32 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
                                 role="alert">
                                 <span class="block sm:inline">{{ Session::get('error') }}</span>
                             </div>

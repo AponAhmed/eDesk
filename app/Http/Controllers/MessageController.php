@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\Reply;
 use App\Models\Settings;
 use App\Utilities\GmailApi;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Psy\VarDumper\Dumper;
 
@@ -214,8 +216,12 @@ class MessageController extends Controller
         return view('reply', array('id' => $id, 'emails' => $emails));
     }
 
+
+
+
     function reply_send(Request $request)
     {
+
         $cc = $request->get('reply_cc');
         $attachment = [];
         // Check if the request has files
@@ -285,8 +291,14 @@ class MessageController extends Controller
                 ];
 
                 $replyMessage .= $previousBody;
-                //dd($replyMessage);
-                $gmail->send($toRmail, "Re: " . $message->subject, $replyMessage, $options, $attachment);
+
+                if (Auth::user()->name == "Pritom") {
+                    if (!$this->waitReply($toRmail, "Re: " . $message->subject, $replyMessage, $options, $message->id)) {
+                        throw new Exception("reply data could not stored");
+                    }
+                } else {
+                    $gmail->send($toRmail, "Re: " . $message->subject, $replyMessage, $options, $attachment);
+                }
                 $message->removeLabel('inbox')->addLabel('sent');
                 Session::flash('success', 'Message Succefully Sent.');
             } catch (Exception $e) {
@@ -294,6 +306,21 @@ class MessageController extends Controller
                 throw new Exception("Reply Error, " . $e->getMessage());
             }
         }
+    }
+
+    function waitReply($to, $subject, $message, $options, $messageId)
+    {
+        $waitReply = new Reply(
+            [
+                'to' => $to,
+                'subject' => $subject,
+                'replyBody' => $message,
+                'options' => json_encode($options),
+                'message_id' => $messageId
+            ]
+        );
+
+        return $waitReply->save();
     }
 
     function redirect_send(Request $request)
@@ -380,6 +407,7 @@ class MessageController extends Controller
         })->orderBy('id', 'desc')->paginate(10);
 
         $actions = $this->multipleActions($box);
+
         return view('home', compact('messages', 'actions'));
     }
 
@@ -396,6 +424,7 @@ class MessageController extends Controller
             'notlocal'  => ['label' => 'Not Local'],
         ];
 
+
         $actionsBox = [
             'inbox'     => ['local', 'spam', 'trash', 'delete'],
             'trash'     => ['untrash', 'delete'],
@@ -410,8 +439,12 @@ class MessageController extends Controller
             $actions4box = $actionsBox[$box];
             $result = [];
 
+            $skipactions=['delete','trash'];
             // Create an array of action details based on the actions associated with the box
             foreach ($actions4box as $action) {
+                if(Auth::user()->name=='Pritom' && in_array($action,$skipactions)){
+                    continue;
+                }
                 $result[] = (object) [
                     'action' => $action,
                     'label' => $actions[$action]['label']

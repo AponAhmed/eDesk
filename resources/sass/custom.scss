@@ -169,6 +169,12 @@ svg {
     border-color: #ddd;
 }
 
+#modifiedMessage {
+    height: calc(100vh - 128px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+}
+
 .message-body {
     padding: 16px;
     height: calc(100% - 70px);

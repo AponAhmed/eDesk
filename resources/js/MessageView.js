@@ -15,9 +15,16 @@ export default class MessageView {
     eventsSet() {
         this.items.forEach(item => {
             let wraper = item.querySelector(".name-wraper");
-            wraper.addEventListener('click', e => {
-                this.detailsTrigger(item);
-            })
+            if (item.classList.contains('replies-list')) {
+                wraper.addEventListener('click', e => {
+                    this.ExReplyTrigger(item);
+                })
+            } else {
+                wraper.addEventListener('click', e => {
+                    this.detailsTrigger(item);
+                })
+            }
+
         });
     }
 
@@ -66,6 +73,40 @@ export default class MessageView {
     </div>`;
     }
 
+    ExReplyTrigger(item) {
+        this.scalitanRelease();
+        this.removeCurrent();
+        item.classList.add(activeClass);
+        this.main.classList.add('details-open');
+        //return;
+        let id = item.getAttribute('data-id');
+        this.getReplymonitor(id)
+            .then(() => {
+                this.details.innerHTML = `<div class="px-1">${this.data}</div>`;
+
+                let releaseClosebtn = this.details.querySelector('.close-view-button');
+                releaseClosebtn.addEventListener('click', this.closeView.bind(this));
+
+                let releaseBtn = this.details.querySelector('#releaseBtn');
+                releaseBtn.addEventListener('click', (e) => {
+                    releaseBtn.innerHTML="Sending...";
+                    this.releaseMessage().then(() => {
+                        window.location.reload();
+                    });
+                });
+            });
+    }
+
+    async releaseMessage() {
+        let id = this.details.querySelector('#reply_id').value;
+        let messageDom = this.details.querySelector('#modifiedMessage');
+        //console.log(id,messageDom.innerHTML);
+        await axios.post('/release', { id: id, modifiedMsg: messageDom.innerHTML })
+            .then(response => {
+                this.data = response.data;
+            });
+    }
+
     detailsTrigger(item) {
         this.scalitan();
 
@@ -83,10 +124,31 @@ export default class MessageView {
             });
 
     }
+    scalitanRelease() {
+        this.details.innerHTML = `<div class="flex flex-col w-full">
+        <div class="p-2  animate-pulse w-full border-b border-solid border-slate-100">
+        <div class="mb-[10px] flex">
+            <div class="h-6 bg-gray-200 w-7 mr-2  rounded"></div>
+            <div class="h-6 bg-gray-200 rounded w-3/5"></div>
+        </div>
+        <div class="flex md:justify-between flex-col md:flex-row">
+            <div class="flex-col hidden md:flex md:flex-row w-full md:w-1/2">
+                <div class="h-3 bg-gray-100 rounded w-3/5 md:mb-0 mb-1 mr-1"></div>
+                <div class="h-3 bg-gray-100 rounded w-2/5 md:mb-0 mb-1"></div>
+            </div>
+        </div>
+    </div>
+        <div class=" p-4  animate-pulse w-full mt-4">
+            <div class="h-4 bg-gray-100 rounded w-4/5 mb-2"></div>
+            <div class="h-4 bg-gray-100 rounded w-5/5 mb-2"></div>
+            <div class="h-4 bg-gray-100 rounded w-3/5 mb-2"></div>
+            <div class="h-4 bg-gray-100 rounded w-4/6 mb-2"></div>
+        </div>
+    </div>`;
+    }
 
     actions() {
         let labels = this.data.labels.split(",");
-        console.log(labels);
         let actDom = new el('div').class('actions').class('justify-end').class('md:absolute').class('static');
 
         if (!labels.includes('trash')) {
@@ -237,6 +299,12 @@ export default class MessageView {
 
     async getdata(id) {
         await axios.post('/message', { id: id })
+            .then(response => {
+                this.data = response.data;
+            });
+    }
+    async getReplymonitor(id) {
+        await axios.post('/replymonitor', { id: id })
             .then(response => {
                 this.data = response.data;
             });
