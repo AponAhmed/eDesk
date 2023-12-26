@@ -486,4 +486,8 @@ class MessageController extends Controller
             return response()->json(['error' => true, 'message' => $e->getMessage()]);
         }
     }
+
+    public function prompt(){
+        return view('prompt');
+    }
 }

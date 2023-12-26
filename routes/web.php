@@ -25,6 +25,7 @@ Auth::routes(['register' => false]);
 // Routes for the Message model (resource routes first)
 //Route::resource('messages', MessageController::class);
 Route::get('/', [MessageController::class, 'index'])->name('home');
+Route::get('/prompt', [MessageController::class, 'prompt'])->name('prompt');
 //Message Actions
 Route::post('/replymonitor', [ReplyController::class, 'getMessage']); //details for the replied Message]
 Route::post('/release', [ReplyController::class, 'release']); //details for the replied Message]
