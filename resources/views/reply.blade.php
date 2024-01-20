@@ -24,13 +24,16 @@
                 placeholder="Email Address">
         </div>
         <div class="relative flex items-center">
+
             <input type="text" name="reply_cc"
-                class="appearance-none w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                class="appearance-none  w-full bg-white border border-gray-300 hover:border-gray-500 px-4 py-2 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="CC">
+            <label class="flex ml-5 w-2/6"><input name="reminder" type="checkbox">&nbsp;Set Reminder</label>
         </div>
     </div>
 
     <button type="submit"
         class="button mt-4 px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-md shadow-sm">Send</button>
     <input type="file" name="attachments[]" multiple id="attachments">
+    
 </form>

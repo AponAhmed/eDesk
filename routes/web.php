@@ -26,6 +26,8 @@ Auth::routes(['register' => false]);
 //Route::resource('messages', MessageController::class);
 Route::get('/', [MessageController::class, 'index'])->name('home');
 Route::get('/prompt', [MessageController::class, 'prompt'])->name('prompt');
+Route::get('/get-count', [MessageController::class, 'getCountData'])->name('get-count');
+
 //Message Actions
 Route::post('/replymonitor', [ReplyController::class, 'getMessage']); //details for the replied Message]
 Route::post('/release', [ReplyController::class, 'release']); //details for the replied Message]
@@ -36,7 +38,7 @@ Route::post('/reply', [MessageController::class, 'reply_send'])->name('reply'); 
 Route::post('/modifi-labels', [MessageController::class, 'modifiLabels'])->name('labels.modify'); //Redirect the message
 
 Route::post('/multiple-action', [MessageController::class, 'multipleAction']); //Redirect the message
-
+Route::post('/delete-all', [MessageController::class, 'deleteAll']); //Redirect the message
 
 Route::get('/message/{id}/info', [MessageController::class, 'info'])->name('info');
 Route::get('/message/{id}/spam', [MessageController::class, 'makeSpam'])->name('message.spam');

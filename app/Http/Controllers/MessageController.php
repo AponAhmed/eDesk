@@ -34,6 +34,7 @@ class MessageController extends Controller
 
     public function __construct()
     {
+        self::GetReminder();
         $this->middleware('auth');
     }
 
@@ -72,6 +73,13 @@ class MessageController extends Controller
         </div>';
     }
 
+    public function deleteAll(Request $request)
+    {
+        if ($request->has('box') && $request->get('box') == 'trash') {
+            $messages = $this->getMessageByBox($request->get('box'));
+            return $messages->delete();
+        }
+    }
 
     function multipleAction(Request $request)
     {
@@ -198,8 +206,6 @@ class MessageController extends Controller
         }
     }
 
-
-
     function redirect($id)
     {
         $emails = [];
@@ -216,8 +222,25 @@ class MessageController extends Controller
         return view('reply', array('id' => $id, 'emails' => $emails));
     }
 
+    public static function GetReminder()
+    {
+        // Get messages where the reminder timestamp is greater than or equal to the current time
+        $messagesToUpdate = Message::where('reminder', '>', 1)
+            ->where('reminder', '<=', now()->timestamp)
+            ->get();
+        foreach ($messagesToUpdate as $message) {
+            $message->reminder = 0;
+            $message->addLabel('reminder');
+        }
+    }
 
-
+    function setReminder(Message $message)
+    {
+        $day = env('REMINDER_DAY');
+        $timestamp = time() + ($day * 24 * 60 * 60);
+        $message->reminder = $timestamp;
+        $message->save();
+    }
 
     function reply_send(Request $request)
     {
@@ -252,6 +275,8 @@ class MessageController extends Controller
             $previousBody = ' <br><br><blockquote style="margin: 0 0 0 20px; border-left: 2px solid #ccc; padding-left: 10px;">' . $message->message . '</blockquote>';
             $replyMessage = "<p>" . nl2br($request->get('message')) . "</p>";
             $replyMessage .= self::$signature;
+
+
 
             try {
                 //code...
@@ -291,7 +316,7 @@ class MessageController extends Controller
                 ];
 
                 $replyMessage .= $previousBody;
-
+                //dd($options);
                 if (Auth::user()->name == "Pritom") {
                     if (!$this->waitReply($toRmail, "Re: " . $message->subject, $replyMessage, $options, $message->id)) {
                         throw new Exception("reply data could not stored");
@@ -301,6 +326,9 @@ class MessageController extends Controller
                 }
                 $message->removeLabel('inbox')->addLabel('sent');
                 Session::flash('success', 'Message Succefully Sent.');
+                if ($request->has('reminder')) {
+                    $this->setReminder($message);
+                } //
             } catch (Exception $e) {
                 //throw $th;
                 throw new Exception("Reply Error, " . $e->getMessage());
@@ -372,16 +400,12 @@ class MessageController extends Controller
         }
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index($box = 'inbox')
+
+    public function getMessageByBox($box = 'inbox')
     {
         // Define an array to store labels to include
         $labelsToInclude = [];
-        $labelsToNotInclude = [];
+
         // Set the labels to include based on the $box value
         if ($box === 'trash') {
             $labelsToInclude = ['trash'];
@@ -395,20 +419,48 @@ class MessageController extends Controller
             $labelsToNotInclude = ['trash', 'spam', 'local'];
         }
 
+        if ($box != 'reminder') {
+            $labelsToNotInclude[] = "reminder";
+        }
+
         // Perform the query to filter messages based on labels to include and labels to not include
         $messages = Message::where(function ($query) use ($labelsToInclude, $labelsToNotInclude) {
             foreach ($labelsToInclude as $label) {
                 $query->orWhere('labels', 'LIKE', '%' . $label . '%');
             }
-
             foreach ($labelsToNotInclude as $label) {
                 $query->where('labels', 'NOT LIKE', '%' . $label . '%');
             }
-        })->orderBy('id', 'desc')->paginate(10);
+            $query->where('reminder', '=', '0');
+        })->orderBy('id', 'desc');
+        return $messages;
+    }
 
+    function getCount($box = 'inbox')
+    {
+        return $this->getMessageByBox($box)->count();
+    }
+
+    public function getCountData()
+    {
+        $boxes = ['inbox' => 0, 'reminder' => 0, 'outbox' => 0];
+        foreach ($boxes as $box => $c) {
+            $boxes[$box] = $this->getCount($box);
+        }
+        return response()->json(['error' => false, 'data' => $boxes]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index($box = 'inbox')
+    {
+        // Perform the query to filter messages based on labels to include and labels to not include
+        $messages = $this->getMessageByBox($box)->paginate(10);
         $actions = $this->multipleActions($box);
-
-        return view('home', compact('messages', 'actions'));
+        return view('home', compact('messages', 'actions', 'box'));
     }
 
 
@@ -439,10 +491,10 @@ class MessageController extends Controller
             $actions4box = $actionsBox[$box];
             $result = [];
 
-            $skipactions=['delete','trash'];
+            $skipactions = ['delete', 'trash'];
             // Create an array of action details based on the actions associated with the box
             foreach ($actions4box as $action) {
-                if(Auth::user()->name=='Pritom' && in_array($action,$skipactions)){
+                if (Auth::user()->name == 'Pritom' && in_array($action, $skipactions)) {
                     continue;
                 }
                 $result[] = (object) [
@@ -487,7 +539,8 @@ class MessageController extends Controller
         }
     }
 
-    public function prompt(){
+    public function prompt()
+    {
         return view('prompt');
     }
 }

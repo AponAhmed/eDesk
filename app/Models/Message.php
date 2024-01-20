@@ -9,7 +9,7 @@ class Message extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'name', 'ip', 'email', 'whatsapp', 'subject', 'message', 'domain_id', 'labels'
+        'name', 'ip', 'email', 'whatsapp', 'subject', 'reminder', 'message', 'domain_id', 'labels'
     ];
     // Cast the 'labels' field to an array
     protected $casts = [

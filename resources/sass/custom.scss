@@ -23,7 +23,6 @@ svg {
     overflow-x: hidden;
 }
 
-
 .nav-wraper {
     height: calc(100% - 80px);
 }
@@ -67,7 +66,6 @@ svg {
     display: block;
 
     #appLogo {
-
         width: auto;
         overflow: visible;
         @apply p-5;
@@ -76,6 +74,10 @@ svg {
     .menu-name {
         display: block;
     }
+    .badge {
+        top: 11px;
+        right: 10px;
+    }
 }
 
 .list-wraper {
@@ -83,7 +85,6 @@ svg {
     height: 100%;
     border-radius: 2px;
     scrollbar-width: none;
-
 
     .mail-list.mail-list-item {
         border-bottom: 1px solid #eee;
@@ -194,7 +195,7 @@ svg {
         align-items: center;
 
         .btn-action {
-            border: 1px solid rgba(0, 0, 0, .1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
             border-radius: 4px;
             display: flex;
             align-items: center;
@@ -232,7 +233,7 @@ svg {
 
         .sender-info {
             margin-left: 10px;
-            transition: all .1s ease-in;
+            transition: all 0.1s ease-in;
 
             svg {
                 color: #169eb3;
@@ -329,16 +330,16 @@ input[type="text"] {
     border-radius: 2px;
 }
 
-.sep>* {
+.sep > * {
     margin-left: 10px;
     position: relative;
 }
 
-.sep> :first-child {
+.sep > :first-child {
     margin-left: 0;
 }
 
-.sep>*::after {
+.sep > *::after {
     content: "";
     position: absolute;
     width: 1px;
@@ -348,7 +349,7 @@ input[type="text"] {
     top: 5px;
 }
 
-.sep>*:first-child::after {
+.sep > *:first-child::after {
     display: none;
 }
 
