@@ -77,6 +77,11 @@
                         </div>
                     </div>
                 </div>
+                @if ($box == 'trash')
+                    <a href="javascript:void(0)" id="delete-all" data-box="{{ $box }}"
+                        class="rounded-full flex  items-center justify-between h-7  p-2 bg-white border border-solid border-gray-300 ml-2">Delete
+                        all</a>
+                @endif
             </div>
             <div class="pagination flex items-center ">
                 <span class="mx-3 text-gray-500 text-sm">Page {{ $messages->currentPage() }} of
