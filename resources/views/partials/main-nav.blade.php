@@ -1,13 +1,19 @@
 @php
     $menus = [
         [
-            'name' => 'Inbox',
+            'name' => 'inbox',
             'route' => 'messages.index',
             'routeParams' => ['status' => 'inbox'],
             'svg' => '<path d="M441.6 171.61L266.87 85.37a24.57 24.57 0 00-21.74 0L70.4 171.61A40 40 0 0048 207.39V392c0 22.09 18.14 40 40.52 40h335c22.38 0 40.52-17.91 40.52-40V207.39a40 40 0 00-22.44-35.78z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" /> <path d="M397.33 368L268.07 267.46a24 24 0 00-29.47 0L109.33 368M309.33 295l136-103M61.33 192l139 105" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" />',
         ],
         [
-            'name' => 'Outbox',
+            'name' => 'reminder',
+            'route' => 'messages.index',
+            'routeParams' => ['status' => 'reminder'],
+            'svg' => '<path d="M112.91 128A191.85 191.85 0 0064 254c-1.18 106.35 85.65 193.8 192 194 106.2.2 192-85.83 192-192 0-104.54-83.55-189.61-187.5-192a4.36 4.36 0 00-4.5 4.37V152" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M233.38 278.63l-79-113a8.13 8.13 0 0111.32-11.32l113 79a32.5 32.5 0 01-37.25 53.26 33.21 33.21 0 01-8.07-7.94z"/>',
+        ],
+        [
+            'name' => 'outbox',
             'route' => 'messages.replies',
             'routeParams' => ['status' => 'outbox'],
             'svg' => '<path d="M470.3 271.15L43.16 447.31a7.83 7.83 0 01-11.16-7V327a8 8 0 016.51-7.86l247.62-47c17.36-3.29 17.36-28.15 0-31.44l-247.63-47a8 8 0 01-6.5-7.85V72.59c0-5.74 5.88-10.26 11.16-8L470.3 241.76a16 16 0 010 29.39z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>',
@@ -56,8 +62,7 @@
         [
             'name' => 'Prompt',
             'route' => 'prompt',
-            'svg' =>
-                '<path d="M160 164s1.44-33 33.54-59.46C212.6 88.83 235.49 84.28 256 84c18.73-.23 35.47 2.94 45.48 7.82C318.59 100.2 352 120.6 352 164c0 45.67-29.18 66.37-62.35 89.18S248 298.36 248 324" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="40"/><circle cx="248" cy="399.99" r="32"/>',
+            'svg' => '<path d="M160 164s1.44-33 33.54-59.46C212.6 88.83 235.49 84.28 256 84c18.73-.23 35.47 2.94 45.48 7.82C318.59 100.2 352 120.6 352 164c0 45.67-29.18 66.37-62.35 89.18S248 298.36 248 324" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="40"/><circle cx="248" cy="399.99" r="32"/>',
         ],
     ];
 
@@ -109,7 +114,8 @@
 
     @endphp
 
-    <div class="group relative flex gap-x-2 p-2 hover:bg-slate-700 @if ($isActive) bg-slate-700 @endif "
+    <div id="box-{{ $menu['name'] }}"
+        class="group relative flex gap-x-2 p-2 hover:bg-slate-700 @if ($isActive) bg-slate-700 @endif "
         title="{{ $menu['name'] }}">
         <div class="flex h-6 w-6 flex-none items-center justify-center menu-icon">
             <svg class="h-6 w-6 text-slate-300 fill-slate-300" viewBox="0 0 512 512">@php echo $menu['svg'] @endphp</svg>
@@ -117,9 +123,11 @@
         <div class="flex items-center">
             <a href="@if (isset($menu['route']) && !empty($menu['route'])) {{ route($menu['route'], isset($menu['routeParams']) ? $menu['routeParams'] : []) }} @endif"
                 class="font-normal text-sm text-slate-400 leading-none block">
-                <span class="menu-name font-normal text-sm text-slate-400 leading-none hidden">{{ $menu['name'] }}</span>
+                <span
+                    class="menu-name font-normal text-sm text-slate-400 leading-none hidden capitalize">{{ $menu['name'] }}</span>
                 <span class="absolute inset-0"></span>
             </a>
         </div>
+        {{-- <span class="badge bg-red-500 text-xs absolute right-1 top-1 text-white rounded-full px-1 ml-2">8</span> --}}
     </div>
 @endforeach
