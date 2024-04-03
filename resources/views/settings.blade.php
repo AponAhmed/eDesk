@@ -11,11 +11,49 @@
                 <div class="tab-wrap settings-tab">
                     <ul class="flex">
                         <li class="active section-head px-4 py-2 cursor-pointer" data-id="mailing">Mailing</li>
-                        <li class="section-head px-4 py-2 cursor-pointer" data-id="general">General Settings</li>
+                        <li class="section-head px-4 py-2 cursor-pointer" data-id="aiSettings">AI</li>
                     </ul>
                     <div class="tab-contents-wrap px-4 py-6">
-                        <section id="general" class="tab-pan ">
-                            Content for General Settings tab goes here
+                        <section id="aiSettings" class="tab-pan ">
+                            <span>This is Gemini, Powred by Google.</span>
+                            <hr class="my-4">
+                            <div class="flex gap-7">
+                                <div class="w-5/12">
+                                    <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">API KEY</label> <!-- Adjust the width as needed -->
+                                        <div class="flex-1 md:ml-4 ml-0">
+                                            <input class="w-full border rounded px-2 py-1" type="text"
+                                                name="settings[ai_api_key]" value="<?php echo $Settings::get('ai_api_key', ''); ?>">
+                                            <span class="text-gray-500 text-sm">Key for api service provider</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">Data Model</label> <!-- Adjust the width as needed -->
+                                        <div class="flex-1 md:ml-4 ml-0">
+                                            <input class="w-full border rounded px-2 py-1" type="text"
+                                                name="settings[ai_data_model]" value="<?php echo $Settings::get('ai_data_model', 'gemini-pro'); ?>">
+                                            <span class="text-gray-500 text-sm">Data model of service provider</span>
+                                        </div>
+                                    </div>
+                                    <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">Temperature</label> <!-- Adjust the width as needed -->
+                                        <div class="flex-1 md:ml-4 ml-0">
+                                            <input class="w-full border rounded px-2 py-1" type="text"
+                                                name="settings[ai_temperature]" value="<?php echo $Settings::get('ai_temperature', '0.7'); ?>">
+                                            <span class="text-gray-500 text-sm">Controls the randomness of the output. Must be positive. Typical values are in the range: [0.0,1.0]. Higher values produce a more random and varied response. A temperature of zero will be deterministic.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="w-7/12">
+                                    <div class="flex-column">
+                                        <label class="text-sm text-gray-600 mb-1 block">Information About your Company</label>
+                                        <textarea rows="12" name="settings[ai_about_company]"
+                                            class="p-2 rounded border border-gray-300 bg-transparent w-full h-full" placeholder="About Your Company"><?php echo $Settings::get('ai_about_company', ''); ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
                         </section>
                         <section id="mailing" class="tab-pan active">
 
@@ -55,42 +93,45 @@
                             @endif
 
                             <hr class="my-4">
-                            <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
-                                <label class="w-32">Replied Box</label> <!-- Adjust the width as needed -->
-                                <div class="flex-1 md:ml-4 ml-0">
-                                    <input class="w-full border rounded px-2 py-1" type="text"
-                                        name="settings[after_reply_box_name]" value="<?php echo $Settings::get('after_reply_box_name', 'eDesk'); ?>">
-                                    <span class="text-gray-500 text-sm">A mail Box - Replied mails will assign there</span>
+                            <div class="w-2/4">
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Replied Box</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <input class="w-full border rounded px-2 py-1" type="text"
+                                            name="settings[after_reply_box_name]" value="<?php echo $Settings::get('after_reply_box_name', 'eDesk'); ?>">
+                                        <span class="text-gray-500 text-sm">A mail Box - Replied mails will assign
+                                            there</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
-                                <label class="w-32">Redirect Box</label> <!-- Adjust the width as needed -->
-                                <div class="flex-1 md:ml-4 ml-0">
-                                    <input class="w-full border rounded px-2 py-1" type="text"
-                                        name="settings[after_redirect_box_name]" value="<?php echo $Settings::get('after_redirect_box_name', 'eDesk-Redirect'); ?>">
-                                    <span class="text-gray-500 text-sm">A mail Box - Redirected mails will Stored
-                                        there</span>
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Redirect Box</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <input class="w-full border rounded px-2 py-1" type="text"
+                                            name="settings[after_redirect_box_name]" value="<?php echo $Settings::get('after_redirect_box_name', 'eDesk-Redirect'); ?>">
+                                        <span class="text-gray-500 text-sm">A mail Box - Redirected mails will Stored
+                                            there</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <hr class="my-4">
-                            <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
-                                <label class="w-32">Admin Name</label> <!-- Adjust the width as needed -->
-                                <div class="flex-1 md:ml-4 ml-0">
-                                    <input class="w-full border rounded px-2 py-1" type="text"
-                                        name="settings[admin_name]" value="<?php echo $Settings::get('admin_name', 'SiATEX'); ?>">
-                                    <span class="text-gray-500 text-sm">Admin Name Who Receives Mail</span>
+                                <hr class="my-4">
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Admin Name</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <input class="w-full border rounded px-2 py-1" type="text"
+                                            name="settings[admin_name]" value="<?php echo $Settings::get('admin_name', 'SiATEX'); ?>">
+                                        <span class="text-gray-500 text-sm">Admin Name Who Receives Mail</span>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
-                                <label class="w-32">Admin Email</label> <!-- Adjust the width as needed -->
-                                <div class="flex-1 md:ml-4 ml-0">
-                                    <input class="w-full border rounded px-2 py-1" type="email"
-                                        name="settings[admin_email]" value="<?php echo $Settings::get('admin_email', 'admin@siatexltd.com'); ?>">
-                                    <span class="text-gray-500 text-sm">Admin Email Address to Receive Mail with tracking
-                                        information</span>
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Admin Email</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <input class="w-full border rounded px-2 py-1" type="email"
+                                            name="settings[admin_email]" value="<?php echo $Settings::get('admin_email', 'admin@siatexltd.com'); ?>">
+                                        <span class="text-gray-500 text-sm">Admin Email Address to Receive Mail with
+                                            tracking
+                                            information</span>
+                                    </div>
                                 </div>
-                            </div>
-
+                                <div class="w-2/4">
                         </section>
                     </div>
                 </div>

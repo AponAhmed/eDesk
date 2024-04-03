@@ -159,7 +159,7 @@ export default class MessageView {
                     replyStr = "Reply Again";
                 }
                 actDom.append(
-                    new el('a').attr('title', `Quick ${replyStr}`).class('flex').class('btn-action').class('popup').class('ml-1').class('px-2').class('py-1').attr('href', `/message/${this.data.id}/reply`)
+                    new el('a').attr('title', `Quick ${replyStr}`).class('flex').attr('data-w',650).class('btn-action').class('popup').class('ml-1').class('px-2').class('py-1').attr('href', `/message/${this.data.id}/reply`)
                         .html(`<svg class="w-4 mr-1 rotate-y-180" viewBox="0 0 512 512"><path d="M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/></svg>  ${replyStr}`).element
                 );
             }

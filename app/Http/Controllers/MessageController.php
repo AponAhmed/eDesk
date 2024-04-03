@@ -6,6 +6,7 @@ use App\Models\Message;
 use App\Models\Reply;
 use App\Models\Settings;
 use App\Utilities\GmailApi;
+use App\Utilities\Helper;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -215,11 +216,30 @@ class MessageController extends Controller
 
     function reply($id)
     {
+        $plainText = "Write a reply in short-sentence to this email using the hints below:\n\n" . $this->getBodyText($id);
+
         $emails = [];
         $emails[Settings::get('admin_email')] = Settings::get('admin_name');
         $emails['admin@siatexltd.com'] = "Admin";
 
-        return view('reply', array('id' => $id, 'emails' => $emails));
+        return view('reply', array('id' => $id, 'emails' => $emails, 'query' => $plainText));
+    }
+
+    function getBodyText($id)
+    {
+        $message = Message::find($id);
+        return Helper::htmlToMarkdown($message->message);
+
+        // $plainText = strip_tags($message->message, '<br>'); // Remove all HTML tags except <br>
+        // // Remove extra whitespace and format text with line breaks
+        // $plainText = preg_replace('/\s+/', ' ', $plainText);
+        // $plainText = preg_replace('/\s*\R\s*/', "\n", $plainText);
+
+        // // Replace <br> tags with newline characters
+        // $plainText = str_replace(['<br>', '<br/>', '<br />'], "\n", $plainText);
+        // $plainText = str_replace(['\n\n'], "\n", $plainText);
+        // $plainText = str_replace(" Item info", "Product Chosen \n\n", $plainText);
+        // return trim($plainText);
     }
 
     public static function GetReminder()

@@ -10,6 +10,11 @@ import popup from "./popup";
 import MessageView from "./MessageView";
 import Tab from "./Tab";
 import ConfirmBox from "./Confirm";
+import Gemini from "./AI/Gemini";
+
+
+
+window.Gemini = Gemini;
 window.axios = axios;
 
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
@@ -251,4 +256,58 @@ function updateBadge(itemId, count) {
     badge.innerText = count;
     // Append the badge to the menu item
     menuItem.appendChild(badge);
+}
+
+// Check if the variable is a DOM object
+function isDOMObject(variable) {
+    return variable instanceof Element || variable instanceof HTMLDocument;
+}
+
+
+function markdownToPlainText(markdown) {
+    // Remove headings
+    markdown = markdown.replace(/^#+\s+(.*)/gm, '$1\n');
+    
+    // Remove bold and italic formatting
+    markdown = markdown.replace(/\*\*(.*?)\*\*/g, '$1');
+    markdown = markdown.replace(/\*(.*?)\*/g, '$1');
+    
+    // Convert unordered lists to numbered lists
+    let counter = 1;
+    markdown = markdown.replace(/^[\-\+\*]\s+(.*)/gm, (match, p1) => `${counter++}. ${p1}\n`);
+
+    // Remove blockquotes
+    markdown = markdown.replace(/^\>\s+(.*)/gm, '$1\n');
+    
+    // Remove inline code
+    markdown = markdown.replace(/`([^`]+)`/g, '$1');
+    
+    // Remove images
+    markdown = markdown.replace(/\!\[(.*?)\]\((.*?)\)/g, '$1');
+    
+    return markdown.trim();
+}
+
+//Ai Reply Generate
+window.generateReply = function (btn, query, hints, outputTextArea) {
+    let exhtml = btn.innerHTML;
+    btn.innerHTML = "Generating... ";
+    if (isDOMObject(query)) {
+        query = query.value;
+    }
+    if (isDOMObject(hints)) {
+        hints = hints.value;
+    }
+    var aboutCompany = AiSettings.about.replace(/\\n/g, '\n');
+    aboutCompany = `\n *Our capabilities and information.* \n\n ${aboutCompany} `;
+
+    let finalQuery = `${query} \n\n *follow below Hints:*\n Take data from capabilities and information if needed.\n ${hints}\n\n ${aboutCompany}`;
+
+    let ai = new Gemini({ key: AiSettings.key, modelName: AiSettings.model, temperature: AiSettings.temperature });
+    ai.execute(finalQuery, []).then(response => {
+        const plainTextContent = markdownToPlainText(response);
+        outputTextArea.value = plainTextContent;
+        //console.log(response);
+        btn.innerHTML = exhtml.replace('Generate', 'Re-generate');
+    });
 }
