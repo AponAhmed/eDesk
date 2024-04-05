@@ -7,6 +7,7 @@ export default class Popup {
         this.appendSelector = "body";
         this.dom = null;
         this.domExistingHtml = null;
+        this.scriptTags = []; // Store added script tags
 
         this.init();
     }
@@ -41,7 +42,18 @@ export default class Popup {
                         const popupHtml =
                             `<div class='popup-wrap pop-${uID}'><div class='popup-body ${cls}' style='${ccs}'>
                 <span class='closePopup'></span><div class='popup-inner'>${data}</div></div></div>`;
+
                         document.querySelector(_this.appendSelector).insertAdjacentHTML('beforeend', popupHtml);
+                        const scriptTags = document.querySelectorAll(`${_this.appendSelector} script`);
+                        // Store script tags
+                       
+                        // Execute each script
+                        scriptTags.forEach(script => {
+                            const newScript = document.createElement('script');
+                            newScript.textContent = script.textContent;
+                            script.parentNode.replaceChild(newScript, script);
+                            _this.scriptTags.push(newScript);
+                        });
 
                         const popUpForm = document.querySelector(".pop-" + uID + " form.ajx");
                         if (popUpForm) {
@@ -77,7 +89,13 @@ export default class Popup {
                         closePopupBtn.addEventListener("click", function () {
                             const popupWrap = this.closest(".popup-wrap");
                             if (popupWrap) {
+                                // Remove added script tags
+                                _this.scriptTags.forEach(script => {
+                                    script.remove();
+                                });
+                                _this.scriptTags = []; // Reset script tags
                                 popupWrap.remove();
+
                             }
                         });
                     })
