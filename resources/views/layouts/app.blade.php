@@ -16,10 +16,12 @@
     <script>
         // Create a JavaScript object with the settings values
         const AiSettings = {
+            ai: "{!! \App\Models\Settings::get('ai_provider', '') !!}",
             key: "{!! \App\Models\Settings::get('ai_api_key', '') !!}",
             model: "{!! \App\Models\Settings::get('ai_data_model', 'gemini-pro') !!}",
             about: `{!! str_replace(["\r\n", "\n", "\r"], "\\n", addslashes(\App\Models\Settings::get('ai_about_company', ''))) !!}`,
-            temperature:"{!! \App\Models\Settings::get('ai_temperature', '0.7') !!}"
+            temperature:"{!! \App\Models\Settings::get('ai_temperature', '0.7') !!}",
+            signPrefix:"{!! \App\Models\Settings::get('ai_signeture_prefix', '') !!}",
         };
     </script>
     <!-- Scripts -->
