@@ -267,47 +267,219 @@ function isDOMObject(variable) {
 function markdownToPlainText(markdown) {
     // Remove headings
     markdown = markdown.replace(/^#+\s+(.*)/gm, '$1\n');
-    
+
     // Remove bold and italic formatting
     markdown = markdown.replace(/\*\*(.*?)\*\*/g, '$1');
     markdown = markdown.replace(/\*(.*?)\*/g, '$1');
-    
+
     // Convert unordered lists to numbered lists
     let counter = 1;
     markdown = markdown.replace(/^[\-\+\*]\s+(.*)/gm, (match, p1) => `${counter++}. ${p1}\n`);
 
     // Remove blockquotes
     markdown = markdown.replace(/^\>\s+(.*)/gm, '$1\n');
-    
+
     // Remove inline code
     markdown = markdown.replace(/`([^`]+)`/g, '$1');
-    
+
     // Remove images
     markdown = markdown.replace(/\!\[(.*?)\]\((.*?)\)/g, '$1');
-    
+
+    // Split markdown into lines
+    let lines = markdown.split('\n');
+
+    // Filter to remove line breaks after numbered list items
+    lines = lines.filter((line, index) => {
+        if (index > 0 && /^\d+\./.test(lines[index - 1])) {
+            return false;
+        }
+        return true;
+    });
+
+    // Add line breaks before first item and after last item
+    lines.unshift('');
+    lines.push('');
+
+    // Join lines back together
+    markdown = lines.join('\n');
+
     return markdown.trim();
 }
 
+
 //Ai Reply Generate
-window.generateReply = function (btn, query, hints, outputTextArea) {
+window.generateReply = function (provider, btn, query, hints, outputTextArea, temperature, language = "English", tone) {
     let exhtml = btn.innerHTML;
     btn.innerHTML = "Generating... ";
+
+    let AiName = provider || AiSettings.ai;
+
     if (isDOMObject(query)) {
         query = query.value;
     }
     if (isDOMObject(hints)) {
         hints = hints.value;
+        hints = hints.trim().replace(/\s+/g, ' ');
     }
     var aboutCompany = AiSettings.about.replace(/\\n/g, '\n');
-    aboutCompany = `\n *Our capabilities and information.* \n\n ${aboutCompany} `;
+    aboutCompany = `\n **Our capabilities and information. ** \n\n ${aboutCompany} `;
 
-    let finalQuery = `${query} \n\n *follow below Hints:*\n Take data from capabilities and information if needed.\n ${hints}\n\n ${aboutCompany}`;
+    if (hints == '') {
+        hints = aboutCompany;
+    }
 
-    let ai = new Gemini({ key: AiSettings.key, modelName: AiSettings.model, temperature: AiSettings.temperature });
-    ai.execute(finalQuery, []).then(response => {
-        const plainTextContent = markdownToPlainText(response);
-        outputTextArea.value = plainTextContent;
-        //console.log(response);
-        btn.innerHTML = exhtml.replace('Generate', 'Re-generate');
-    });
+    let finalQuery = `${query} \n\n *follow below Hints:*\n No needed Signature part for email, like 'Best regards', '[Your Company Name]'.. . \n ${hints}`;
+
+    let ai;
+    switch (AiName) {
+        case 'gemini':
+            ai = new Gemini({ key: AiSettings.key, modelName: AiSettings.model, temperature: temperature });
+            ai.execute(finalQuery, []).then(response => {
+                const plainTextContent = markdownToPlainText(response);
+                outputTextArea.value = removeEmailSignature(plainTextContent);
+                //console.log(response);
+                btn.innerHTML = exhtml.replace('Generate', 'Re-generate');
+            });
+            break;
+        default:
+            try {
+                // Define the data to be sent in the request body
+                const data = {
+                    prompt: finalQuery,
+                    //url: 'ai-content-generator',
+                    language: language
+                };
+                if (tone) {
+                    data.tone = tone;
+                }
+
+                // Make POST request using Axios
+                axios.post('/ai', data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    }
+                }).then(response => {
+                    let responseData = response.data;
+                    if (responseData.error == true) {
+                        alert(responseData.message);
+                    } else {
+                        outputTextArea.value = removeEmailSignature(responseData.body);
+                        //console.log(response);
+                        btn.innerHTML = exhtml.replace('Generate', 'Re-generate');
+                    }
+                })
+            } catch (error) {
+                // Handle errors
+                console.error('Error:', error.message);
+            }
+            break;
+    }
+}
+
+const signaturePhrases = [
+    'Best regards,',
+    'Thank you.',
+    'Thanks,',
+    'Sincerely,',
+    'Yours faithfully,',
+    'Warm regards,',
+    'With gratitude,',
+    'Kind regards,',
+    'Yours truly,',
+    'Cheers,',
+    'Take care,',
+    'Looking forward to hearing from you,',
+    'Until next time,',
+    'Respectfully,',
+    'Best,',
+    'Regards,'
+];
+
+
+function removeEmailSignature(emailContent) {
+    emailContent = removeSubjectLine(emailContent);
+
+    let signPrefix = AiSettings.signPrefix;
+    let signPrefixLines = signPrefix.split('\n');
+    // Merge arrays and keep unique elements
+    const allPrefix = Array.from(new Set(signaturePhrases.concat(signPrefixLines)));
+    // Split the email content by lines
+    let lines = emailContent.split('\n');
+    let signatureIndex = -1;
+
+    // Loop through the lines to find the signature
+    for (let i = lines.length - 1; i >= 0; i--) {
+        let line = lines[i].trim();
+
+        // Check if the line matches any of the signature phrases
+        if (allPrefix.some(phrase => line.startsWith(phrase))) {
+            signatureIndex = i;
+            break; // Stop further processing as signature is found
+        }
+    }
+
+    // Remove the signature and everything after it if found
+    if (signatureIndex !== -1) {
+        lines = lines.slice(0, signatureIndex);
+    }
+
+    // Join the remaining lines back into a string
+    let cleanedContent = lines.join('\n').trim();
+
+
+
+    return cleanedContent;
+}
+
+function removeSubjectLine(email) {
+    // Use a regular expression to match the "Subject:" line
+    let subjectRegex = /^Subject:.*\n/gm;
+    // Replace the matched "Subject:" line with an empty string
+    let modifiedEmail = email.replace(subjectRegex, '');
+    return modifiedEmail;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    //Ai Settings 
+    let aiPorivider = document.getElementById("aiProvider");
+    if (aiPorivider) {
+        aiSettingsFieldManage(aiPorivider.value);
+        aiPorivider.addEventListener("change", function (e) {
+            aiSettingsFieldManage(aiPorivider.value);
+        });
+    }
+});
+
+function aiSettingsFieldManage(prov) {
+    // Get all elements with class "freebox-settings"
+    var freeboxSettings = document.querySelectorAll('.freebox-settings');
+
+    // Get all elements with class "gemini-settings"
+    var geminiSettings = document.querySelectorAll('.gemini-settings');
+
+    switch (prov) {
+        case "freebox":
+            // Loop through all elements with class "gemini-settings" and add class "hidden"
+            geminiSettings.forEach(function (element) {
+                element.classList.add('hidden');
+            });
+
+            // Loop through all elements with class "freebox-settings" and remove class "hidden"
+            freeboxSettings.forEach(function (element) {
+                element.classList.remove('hidden');
+            });
+            break;
+        case "gemini":
+            // Loop through all elements with class "freebox-settings" and add class "hidden"
+            freeboxSettings.forEach(function (element) {
+                element.classList.add('hidden');
+            });
+
+            // Loop through all elements with class "gemini-settings" and remove class "hidden"
+            geminiSettings.forEach(function (element) {
+                element.classList.remove('hidden');
+            });
+            break;
+    }
 }
