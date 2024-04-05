@@ -216,7 +216,10 @@ class MessageController extends Controller
 
     function reply($id)
     {
-        $plainText = "Write a reply in short-sentence to this email using the hints below:\n\n" . $this->getBodyText($id);
+        $prefix = Settings::get('ai_prompt_prefix', 'Write a reply in short-sentence to this email using the hints below:');
+        $plainText = "$prefix\n\n" . $this->getBodyText($id);
+
+        $plainText = $this->removeMobileNumbersAndEmails($plainText);
 
         $emails = [];
         $emails[Settings::get('admin_email')] = Settings::get('admin_name');
@@ -224,6 +227,24 @@ class MessageController extends Controller
 
         return view('reply', array('id' => $id, 'emails' => $emails, 'query' => $plainText));
     }
+
+    function removeMobileNumbersAndEmails($text)
+    {
+        // Remove mobile numbers
+        $text = preg_replace('/\b(?:\+\d{1,2}\s?)?(?:\d{3}[-\.\s]?)?\d{3}[-\.\s]?\d{4}\b/', '', $text);
+        $text = preg_replace('/^((?:[1-9][0-9 ().-]{5,28}[0-9])|(?:(00|0)( ){0,1}[1-9][0-9 ().-]{3,26}[0-9])|(?:(\+)( ){0,1}[1-9][0-9 ().-]{4,27}[0-9]))$/', '', $text);
+
+        $text = preg_replace('/^((091|\+91)?|\((091|\+91)?\)|(91)?|\(91\)|0)? ?[7-9][0-9]{9}$/', '', $text);
+        $text = preg_replace('/\b\d{4}\s\d{5}\s\d{5}\b|\b\d{5}\s\d{5}\b/', '', $text);
+
+        $text = preg_replace('/^(?:(?:\+|00)33[\s.-]?[67]|0[\s.-]?[67])(?:[\s.-]*\d{2}){4}$/', '', $text);
+
+        // Remove email addresses
+        $text = preg_replace('/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/', '', $text);
+
+        return $text;
+    }
+
 
     function getBodyText($id)
     {
@@ -337,6 +358,7 @@ class MessageController extends Controller
 
                 $replyMessage .= $previousBody;
                 //dd($options);
+
                 if (Auth::user()->name == "Pritom") {
                     if (!$this->waitReply($toRmail, "Re: " . $message->subject, $replyMessage, $options, $message->id)) {
                         throw new Exception("reply data could not stored");
@@ -554,7 +576,7 @@ class MessageController extends Controller
             // Delete the message
             $message->delete();
             return response()->json(['error' => false, 'message' => 'Message Deleted successfully']);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => true, 'message' => $e->getMessage()]);
         }
     }
