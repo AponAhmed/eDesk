@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiGenerate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
@@ -27,6 +28,8 @@ Auth::routes(['register' => false]);
 Route::get('/', [MessageController::class, 'index'])->name('home');
 Route::get('/prompt', [MessageController::class, 'prompt'])->name('prompt');
 Route::get('/get-count', [MessageController::class, 'getCountData'])->name('get-count');
+//AI
+Route::post('/ai', [AiGenerate::class, 'generate'])->name('ai');
 
 //Message Actions
 Route::post('/replymonitor', [ReplyController::class, 'getMessage']); //details for the replied Message]
