@@ -15,11 +15,22 @@
                     </ul>
                     <div class="tab-contents-wrap px-4 py-6">
                         <section id="aiSettings" class="tab-pan ">
-                            <span>This is Gemini, Powred by Google.</span>
+
+                            <div class="flex items-center">
+                                <label for="select" class="mr-2">Select an option:</label>
+                                <select id="aiProvider" name="settings[ai_provider]" id="select"
+                                    class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500">
+                                    <option value="freebox" @if ($Settings::get('ai_provider', 'gemini') === 'freebox') selected @endif>Open AI
+                                        (Freebox)
+                                    </option>
+                                    <option value="gemini" @if ($Settings::get('ai_provider', 'gemini') === 'gemini') selected @endif>Gemini</option>
+                                </select>
+                            </div>
                             <hr class="my-4">
                             <div class="flex gap-7">
                                 <div class="w-5/12">
-                                    <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <div
+                                        class="gemini-settings optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
                                         <label class="w-32">API KEY</label> <!-- Adjust the width as needed -->
                                         <div class="flex-1 md:ml-4 ml-0">
                                             <input class="w-full border rounded px-2 py-1" type="text"
@@ -28,7 +39,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <div
+                                        class="gemini-settings optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
                                         <label class="w-32">Data Model</label> <!-- Adjust the width as needed -->
                                         <div class="flex-1 md:ml-4 ml-0">
                                             <input class="w-full border rounded px-2 py-1" type="text"
@@ -36,18 +48,160 @@
                                             <span class="text-gray-500 text-sm">Data model of service provider</span>
                                         </div>
                                     </div>
-                                    <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
-                                        <label class="w-32">Temperature</label> <!-- Adjust the width as needed -->
+                                    <div
+                                        class="freebox-settings optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">FreeBox Model</label> <!-- Adjust the width as needed -->
                                         <div class="flex-1 md:ml-4 ml-0">
-                                            <input class="w-full border rounded px-2 py-1" type="text"
+                                            @php
+                                                $selectedModel = $Settings::get(
+                                                    'ai_freebox_model',
+                                                    'ai-content-generator',
+                                                ); // Assuming $Settings::get() retrieves the selected language
+
+                                                $models = [
+                                                    'ai-content-generator' => 'Content Generator',
+                                                    'ai-email-generator' => 'Email Generator',
+                                                ];
+                                            @endphp
+                                            <select name="settings[ai_freebox_model]"
+                                                class="block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500">
+                                                @foreach ($models as $k => $name)
+                                                    <option value="{{ $k }}"
+                                                        {{ $k == $selectedModel ? 'selected' : '' }}>
+                                                        {{ $name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="freebox-settings optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">Language</label> <!-- Adjust the width as needed -->
+                                        <div class="flex-1 md:ml-4 ml-0">
+                                            @php
+                                                $selectedLanguage = $Settings::get('ai_lang', ''); // Assuming $Settings::get() retrieves the selected language
+                                                $languages = [
+                                                    'English',
+                                                    'Bulgarian',
+                                                    'Czech',
+                                                    'Chinese (Simplified)',
+                                                    'Chinese (Traditional)',
+                                                    'Dutch',
+                                                    'Danish',
+                                                    'Estonian',
+                                                    'French',
+                                                    'Finnish',
+                                                    'German',
+                                                    'Greek',
+                                                    'Hungarian',
+                                                    'Italian',
+                                                    'Japanese',
+                                                    'Korean',
+                                                    'Lithuanian',
+                                                    'Latvian',
+                                                    'Norwegian',
+                                                    'Polish',
+                                                    'Portuguese (Portugal)',
+                                                    'Portuguese (Brazil)',
+                                                    'Romanian',
+                                                    'Spanish',
+                                                    'Slovak',
+                                                    'Slovenian',
+                                                    'Swedish',
+                                                ];
+                                            @endphp
+
+                                            <select name="settings[ai_lang]"
+                                                class="block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500">
+                                                @foreach ($languages as $language)
+                                                    <option value="{{ $language }}"
+                                                        {{ $language == $selectedLanguage ? 'selected' : '' }}>
+                                                        {{ $language }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="freebox-settings optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">Tone</label> <!-- Adjust the width as needed -->
+                                        <div class="flex-1 md:ml-4 ml-0">
+                                            <select name="settings[ai_tone]"
+                                                class="block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500">
+                                                <option value="" disabled>Select an option</option>
+                                                @php
+                                                    $selectedOption = $Settings::get('ai_lang', 'Formal'); // Assume $selectedOption contains the value of the selected option
+                                                    $options = [
+                                                        'Formal' => 'Formal',
+                                                        'Professional' => 'Professional',
+                                                        'Friendly' => 'Friendly',
+                                                        'Concise' => 'Concise',
+                                                        'Detailed' => 'Detailed',
+                                                        'Informal' => 'Informal',
+                                                        'Inspirational' => 'Inspirational',
+                                                        'Requestive' => 'Requestive',
+                                                        'Consultative' => 'Consultative',
+                                                        'Appreciative' => 'Appreciative',
+                                                        'Declination' => 'Declination',
+                                                    ];
+                                                @endphp
+                                                @foreach ($options as $value => $label)
+                                                    <option value="{{ $value }}"
+                                                        {{ $selectedOption === $value ? 'selected' : '' }}>
+                                                        {{ $label }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="gemini-settings optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">Creativity</label> <!-- Adjust the width as needed -->
+                                        <div class="flex-1 md:ml-4 ml-0">
+                                            <div class="flex">
+                                                <input title="Temperature" name="settings[ai_temperature]" id="temparature"
+                                                    type="range" min="0" max="1"
+                                                    value="{{ \App\Models\Settings::get('ai_temperature', '0.7') }}"
+                                                    step="0.1"
+                                                    class="mt-2 range-input appearance-none w-10/12 bg-gray-400 rounded h-1 transition-all ease-in-out duration-300"
+                                                    oninput="document.getElementById('temparatureVal').textContent = this.value">
+
+                                                <span id="temparatureVal" class="text-sm ml-2">
+                                                    {{ \App\Models\Settings::get('ai_temperature', '0.7') }}
+                                                </span>
+                                            </div>
+
+                                            {{-- <input class="w-full border rounded px-2 py-1" type="text"
                                                 name="settings[ai_temperature]" value="<?php echo $Settings::get('ai_temperature', '0.7'); ?>">
-                                            <span class="text-gray-500 text-sm">Controls the randomness of the output. Must be positive. Typical values are in the range: [0.0,1.0]. Higher values produce a more random and varied response. A temperature of zero will be deterministic.</span>
+                                             --}}
+                                            <span class="text-gray-500 text-sm">Controls the randomness of the output. Must
+                                                be positive. Typical values are in the range: [0.0,1.0]</span>
+                                        </div>
+                                    </div>
+                                    <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">Prompt Prefix</label> <!-- Adjust the width as needed -->
+                                        <div class="flex-1 md:ml-4 ml-0">
+                                            <textarea rows="2" name="settings[ai_prompt_prefix]"
+                                                class="p-2 rounded border border-gray-300 bg-transparent w-full h-full"
+                                                placeholder="Write a reply in short-sentence to this email using the hints below:"><?php echo $Settings::get('ai_prompt_prefix', ''); ?></textarea>
+
+                                            <span class="text-gray-500 text-sm">Prefix text of prompt</span>
+                                        </div>
+                                    </div>
+                                    <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                        <label class="w-32">Signature Filter</label> <!-- Adjust the width as needed -->
+                                        <div class="flex-1 md:ml-4 ml-0">
+                                            <textarea placeholder="Best regards," rows="2" name="settings[ai_signeture_prefix]"
+                                                class="p-2 rounded border border-gray-300 bg-transparent w-full h-full"
+                                                placeholder="Write a reply in short-sentence to this email using the hints below:"><?php echo $Settings::get(
+                                                    'ai_signeture_prefix',""); ?></textarea>
+
+                                            <span class="text-gray-500 text-sm">(each should new Line) Prefix text of signature and remove rest..</span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="w-7/12">
                                     <div class="flex-column">
-                                        <label class="text-sm text-gray-600 mb-1 block">Information About your Company</label>
+                                        <label class="text-sm text-gray-600 mb-1 block">Information About your
+                                            Company</label>
                                         <textarea rows="12" name="settings[ai_about_company]"
                                             class="p-2 rounded border border-gray-300 bg-transparent w-full h-full" placeholder="About Your Company"><?php echo $Settings::get('ai_about_company', ''); ?></textarea>
                                     </div>
