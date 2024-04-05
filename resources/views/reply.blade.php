@@ -6,12 +6,18 @@
     <div class="mb-4 relative">
         <div class="absolute right-0 top-[-25px] flex items-center">
             <button type="button" class="flex py-1 px-4 items-center leading-4"
-                onclick="window.generateReply(this,query,hint,message)">
+                onclick="window.generateReply(aiProvider.value,this,query,hint,message,temparature.value,language.value,tone.value)">
                 <svg class="w-3 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                     <path fill="currentColor"
                         d="m199.04 672.64 193.984 112 224-387.968-193.92-112-224 388.032zm-23.872 60.16 32.896 148.288 144.896-45.696zM455.04 229.248l193.92 112 56.704-98.112-193.984-112-56.64 98.112zM104.32 708.8l384-665.024 304.768 175.936L409.152 884.8h.064l-248.448 78.336zm384 254.272v-64h448v64h-448z">
                     </path>
                 </svg> Generate</button>
+            <select id="aiProvider" id="select" class="border border-gray-300 text-xs rounded-md py-[2px] px-2 ">
+                <option value="freebox" @if (App\Models\Settings::get('ai_provider', 'gemini') === 'freebox') selected @endif>Open AI
+                    (Freebox)
+                </option>
+                <option value="gemini" @if (App\Models\Settings::get('ai_provider', 'gemini') === 'gemini') selected @endif>Gemini</option>
+            </select>
             <button type="button" onclick="aiSettings.classList.toggle('hidden')"
                 class="flex items-center p-1 leading-4">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 512 512">
@@ -26,11 +32,102 @@
             <div class="flex gap-2 mb-2">
                 <div class="w-7/12">
                     <label class="text-sm text-gray-500">Prompt</label>
-                    <textarea rows="4" class="text-sm w-full p-2 rounded-md border border-solid border-gray-200" id="query">{{ $query }}</textarea>
+                    <textarea rows="5" class="text-sm w-full p-2 rounded-md border border-solid border-gray-200" id="query">{{ $query }}</textarea>
                 </div>
                 <div class="w-5/12">
                     <label class="text-sm text-gray-500">Hint</label>
-                    <textarea rows="4" class="text-sm w-full p-2 rounded-md border border-solid border-gray-200" id="hint"></textarea>
+                    <textarea rows="3" class="text-sm w-full p-2 rounded-md border border-solid border-gray-200" id="hint"></textarea>
+                    <div class="gemini-settings flex flex-col">
+                        <label class="text-xs leading-4 mt-1 text-gray-500">Creativity</label>
+                        <div class="flex">
+                            <input title="Temperature" id="temparature" type="range" min="0" max="1"
+                                value="{{ \App\Models\Settings::get('ai_temperature', '0.7') }}" step="0.1"
+                                class="mt-2 range-input appearance-none w-10/12 bg-gray-400 rounded h-1 transition-all ease-in-out duration-300"
+                                oninput="document.getElementById('temparatureVal').textContent = this.value">
+
+                            <span id="temparatureVal" class="text-sm ml-2">
+                                {{ \App\Models\Settings::get('ai_temperature', '0.7') }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="freebox-settings flex gap-1">
+                        <div class="flex flex-col w-1/2">
+                            <label class=" text-xs leading-4 mt-1 text-gray-500">Language</label>
+                            <div class="flex">
+                                @php
+                                    $selectedLanguage = \App\Models\Settings::get('ai_lang', ''); // Assuming $Settings::get() retrieves the selected language
+                                    $languages = [
+                                        'English',
+                                        'Bulgarian',
+                                        'Czech',
+                                        'Chinese (Simplified)',
+                                        'Chinese (Traditional)',
+                                        'Dutch',
+                                        'Danish',
+                                        'Estonian',
+                                        'French',
+                                        'Finnish',
+                                        'German',
+                                        'Greek',
+                                        'Hungarian',
+                                        'Italian',
+                                        'Japanese',
+                                        'Korean',
+                                        'Lithuanian',
+                                        'Latvian',
+                                        'Norwegian',
+                                        'Polish',
+                                        'Portuguese (Portugal)',
+                                        'Portuguese (Brazil)',
+                                        'Romanian',
+                                        'Spanish',
+                                        'Slovak',
+                                        'Slovenian',
+                                        'Swedish',
+                                    ];
+                                @endphp
+
+                                <select id="language"
+                                    class="block w-full py-[2px] px-2 text-xs bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500">
+                                    @foreach ($languages as $language)
+                                        <option value="{{ $language }}"
+                                            {{ $language == $selectedLanguage ? 'selected' : '' }}>
+                                            {{ $language }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex flex-col w-1/2">
+                            <label class=" text-xs leading-4 mt-1 text-gray-500">Tone</label>
+                            <div class="flex">
+                                <select id="tone"
+                                    class="block w-full py-[2px] px-2 text-xs bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500">
+                                    @php
+                                        $selectedOption = \App\Models\Settings::get('ai_lang', 'Formal'); // Assume $selectedOption contains the value of the selected option
+                                        $options = [
+                                            'Formal' => 'Formal',
+                                            'Professional' => 'Professional',
+                                            'Friendly' => 'Friendly',
+                                            'Concise' => 'Concise',
+                                            'Detailed' => 'Detailed',
+                                            'Informal' => 'Informal',
+                                            'Inspirational' => 'Inspirational',
+                                            'Requestive' => 'Requestive',
+                                            'Consultative' => 'Consultative',
+                                            'Appreciative' => 'Appreciative',
+                                            'Declination' => 'Declination',
+                                        ];
+                                    @endphp
+                                    @foreach ($options as $value => $label)
+                                        <option value="{{ $value }}"
+                                            {{ $selectedOption === $value ? 'selected' : '' }}>
+                                            {{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -65,3 +162,47 @@
         class="button mt-4 px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-md shadow-sm">Send</button>
     <input type="file" name="attachments[]" multiple id="attachments">
 </form>
+
+<script>
+    var aiPorivider = document.getElementById("aiProvider");
+    if (aiPorivider) {
+        aiSettingsFieldManage(aiPorivider.value);
+        aiPorivider.addEventListener("change", function(e) {
+            aiSettingsFieldManage(aiPorivider.value);
+        });
+    }
+
+
+    function aiSettingsFieldManage(prov) {
+        // Get all elements with class "freebox-settings"
+        var freeboxSettings = document.querySelectorAll('.freebox-settings');
+
+        // Get all elements with class "gemini-settings"
+        var geminiSettings = document.querySelectorAll('.gemini-settings');
+
+        switch (prov) {
+            case "freebox":
+                // Loop through all elements with class "gemini-settings" and add class "hidden"
+                geminiSettings.forEach(function(element) {
+                    element.classList.add('hidden');
+                });
+
+                // Loop through all elements with class "freebox-settings" and remove class "hidden"
+                freeboxSettings.forEach(function(element) {
+                    element.classList.remove('hidden');
+                });
+                break;
+            case "gemini":
+                // Loop through all elements with class "freebox-settings" and add class "hidden"
+                freeboxSettings.forEach(function(element) {
+                    element.classList.add('hidden');
+                });
+
+                // Loop through all elements with class "gemini-settings" and remove class "hidden"
+                geminiSettings.forEach(function(element) {
+                    element.classList.remove('hidden');
+                });
+                break;
+        }
+    }
+</script>
