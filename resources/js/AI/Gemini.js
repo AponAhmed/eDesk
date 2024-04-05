@@ -1,6 +1,6 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
-//AIzaSyBExT55CDgeKW1U4X00EtzqEm58wyN9yFo
+
 export default class Gemini {
     constructor({ ...args }) {
         this.lastPrompt = "";
@@ -11,11 +11,12 @@ export default class Gemini {
 
         const generationConfig = {
             // stopSequences: ["red"],
-            // maxOutputTokens: 200,
-            temperature: 0.9,//args.temperature || .7
+            // maxOutputTokens: 100,
+            temperature: args.temperature || .9,
             // topP: 0.1,
-            // topK: 16,
+            //  topK: 16,
         };
+        console.log(generationConfig);
 
         this.MODEL = this.AI.getGenerativeModel({ model: this.modelName, generationConfig });
     }
