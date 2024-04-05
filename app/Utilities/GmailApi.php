@@ -148,10 +148,10 @@ class GmailApi
     /**
      * To Send Email Via Gmail API
      *
-     * @param mix $to Receiver array or string for single send
+     * @param  $to Receiver array or string for single send
      * @param string $subject Subject line of email
      * @param string $message Mail Body
-     * @param Array $options Mail Sending options
+     * @param array $options Mail Sending options
      */
     public function send($to, $subject = "", $message = "", $options = [],$attachments=[])
     {
@@ -204,7 +204,6 @@ class GmailApi
     /**
      * @param Message $service
      * @param Gmail $service
-     * @return array|false All Labels
      */
     function modifyLabels($message, $service)
     {
@@ -219,7 +218,7 @@ class GmailApi
     /**
      * Return Existing Label or by creating a new one
      * @param string $label
-     * @param Gmail $service
+     * @param  $service
      * @param Label $label
      */
     function getLabel($labelName, $service)
