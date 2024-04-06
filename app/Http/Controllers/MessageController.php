@@ -242,6 +242,11 @@ class MessageController extends Controller
         // Remove email addresses
         $text = preg_replace('/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b/', '', $text);
 
+        // Regular expression pattern to match WhatsApp number and following digits until newline
+        $re = '/\**WhatsApp:.*R?/';
+        // Replace WhatsApp number and following digits with an empty string
+        $text = preg_replace($re, '', $text);
+
         return $text;
     }
 
@@ -249,18 +254,10 @@ class MessageController extends Controller
     function getBodyText($id)
     {
         $message = Message::find($id);
-        return Helper::htmlToMarkdown($message->message);
-
-        // $plainText = strip_tags($message->message, '<br>'); // Remove all HTML tags except <br>
-        // // Remove extra whitespace and format text with line breaks
-        // $plainText = preg_replace('/\s+/', ' ', $plainText);
-        // $plainText = preg_replace('/\s*\R\s*/', "\n", $plainText);
-
-        // // Replace <br> tags with newline characters
-        // $plainText = str_replace(['<br>', '<br/>', '<br />'], "\n", $plainText);
-        // $plainText = str_replace(['\n\n'], "\n", $plainText);
-        // $plainText = str_replace(" Item info", "Product Chosen \n\n", $plainText);
-        // return trim($plainText);
+        $plainText = Helper::htmlToMarkdown($message->message);   // Remove all HTML tags except <br>
+        $plainText = strip_tags($plainText, '<br>');
+        $plainText = str_replace("Item info", '** Item info :** ', $plainText);
+        return $plainText;
     }
 
     public static function GetReminder()
