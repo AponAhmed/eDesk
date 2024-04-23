@@ -7,6 +7,7 @@ use App\Models\Reply;
 use App\Models\Settings;
 use App\Utilities\GmailApi;
 use App\Utilities\Helper;
+use DOMDocument;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -254,11 +255,47 @@ class MessageController extends Controller
     function getBodyText($id)
     {
         $message = Message::find($id);
-        $plainText = Helper::htmlToMarkdown($message->message);   // Remove all HTML tags except <br>
+        $bodyHtml = $message->message;
+
+        // Create a DOMDocument instance
+        $dom = new DOMDocument();
+        // Load HTML content
+        $dom->loadHTML($bodyHtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+        // Find all tables
+        $tables = $dom->getElementsByTagName('table');
+
+        // Loop through each table
+        foreach ($tables as $table) {
+            // Find all th elements
+            $thItems = $table->getElementsByTagName('th');
+            // Flag to determine if the table should be removed
+            $removeTable = false;
+            // Loop through each th element
+            foreach ($thItems as $th) {
+                // Check if th contains "Item" or "Info"
+                if (strpos($th->nodeValue, 'Item') !== false || strpos($th->nodeValue, 'Info') !== false) {
+                    // If it does, set flag to true and break out of the loop
+                    $removeTable = true;
+                    break;
+                }
+            }
+            // If the table should be removed, remove it from the DOM
+            if ($removeTable) {
+                $table->parentNode->removeChild($table);
+            }
+        }
+
+        // Get the HTML content after table removal
+        $bodyHtml = $dom->saveHTML();
+
+        $plainText = Helper::htmlToMarkdown($bodyHtml);   // Remove all HTML tags except <br>
         $plainText = strip_tags($plainText, '<br>');
-        $plainText = str_replace("Item info", '** Item info :** ', $plainText);
         return $plainText;
     }
+
+
+
 
     public static function GetReminder()
     {
