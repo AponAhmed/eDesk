@@ -20,8 +20,8 @@
             key: "{!! \App\Models\Settings::get('ai_api_key', '') !!}",
             model: "{!! \App\Models\Settings::get('ai_data_model', 'gemini-pro') !!}",
             about: `{!! str_replace(["\r\n", "\n", "\r"], "\\n", addslashes(\App\Models\Settings::get('ai_about_company', ''))) !!}`,
-            temperature:"{!! \App\Models\Settings::get('ai_temperature', '0.7') !!}",
-            signPrefix:"{!! \App\Models\Settings::get('ai_signeture_prefix', '') !!}",
+            temperature: "{!! \App\Models\Settings::get('ai_temperature', '0.7') !!}",
+            signPrefix: "{!! \App\Models\Settings::get('ai_signeture_prefix', '') !!}",
         };
     </script>
     <!-- Scripts -->
@@ -40,7 +40,14 @@
                         <a id="appLogo"
                             class="text-4xl font-light text-slate-300 m-auto w-5 overflow-hidden py-5  first-letter:text-cyan-400"
                             href="{{ url('/') }}">
-                            {{ config('app.name', 'Laravel') }}
+                            @php
+                                $currentParent = request()->segment(1) ?? 'edesk';
+                                if ($currentParent == 'gdesk') {
+                                    echo 'gDesk';
+                                } else {
+                                    echo config('app.name', 'Laravel');
+                                }
+                            @endphp
                         </a>
                     </div>
                     <div class="flex flex-col justify-between h-full nav-wraper pt-8">
