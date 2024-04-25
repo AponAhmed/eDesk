@@ -29,7 +29,7 @@ svg {
 }
 
 .nav-wraper {
-    height: calc(100% - 80px);
+	height: calc(100% - 76px);
 }
 
 .dropdown-content {
@@ -66,6 +66,7 @@ svg {
     background: rgba(0, 255, 0, 0.05);
 }
 
+
 #sidebar.open {
     @apply w-48;
     display: block;
@@ -83,6 +84,17 @@ svg {
         top: 11px;
         right: 10px;
     }
+
+    .sub-nav > div {
+        flex-direction: revert;
+    }
+    .sub-nav > div > a:last-child .menu-name {
+        display: none;
+    }
+    .sub-nav > div svg {
+        width:16px; height:16px;
+    }
+
 }
 
 .list-wraper {
