@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Domain;
 use App\Models\Settings;
 use App\Utilities\GmailApi;
 use Exception;
@@ -22,7 +23,8 @@ class SettingsController extends Controller
         if ($gmailApi->get2Redirect()) {
             return redirect(url()->current());
         }
-        return view('settings', ['gmail' => $gmailApi, 'Settings' => Settings::class]);
+        $domains = Domain::orderBy('id', 'desc')->get();
+        return view('settings', ['gmail' => $gmailApi, 'Settings' => Settings::class, 'domains' => $domains]);
     }
 
     function AuthLogout()
