@@ -29,7 +29,7 @@ svg {
 }
 
 .nav-wraper {
-	height: calc(100% - 76px);
+	height: calc(100% - 70px);
 }
 
 .dropdown-content {
@@ -75,7 +75,14 @@ svg {
         width: auto;
         overflow: visible;
         @apply p-5;
-    }
+
+        #logoSvg path:nth-last-child(-n+3) {
+            display: block;
+        }
+        #logoSvg {
+            width: 67px;
+        }
+    }    
 
     .menu-name {
         display: block;
