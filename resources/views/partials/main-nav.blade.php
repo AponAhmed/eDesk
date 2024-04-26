@@ -65,6 +65,16 @@
                     '<path d="M160 164s1.44-33 33.54-59.46C212.6 88.83 235.49 84.28 256 84c18.73-.23 35.47 2.94 45.48 7.82C318.59 100.2 352 120.6 352 164c0 45.67-29.18 66.37-62.35 89.18S248 298.36 248 324" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="40"/><circle cx="248" cy="399.99" r="32"/>',
             ],
         ],
+        'gdesk' => [
+            [
+                'name' => 'inbox',
+                'route' => 'gdesk.index',
+                'routeParams' => ['status' => 'inbox'],
+                'svg' =>
+                    '<path d="M441.6 171.61L266.87 85.37a24.57 24.57 0 00-21.74 0L70.4 171.61A40 40 0 0048 207.39V392c0 22.09 18.14 40 40.52 40h335c22.38 0 40.52-17.91 40.52-40V207.39a40 40 0 00-22.44-35.78z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" /> <path d="M397.33 368L268.07 267.46a24 24 0 00-29.47 0L109.33 368M309.33 295l136-103M61.33 192l139 105" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" />',
+            ],
+        ],
+
         'settings' => [
             [
                 'name' => 'General Settings',
@@ -75,9 +85,9 @@
 
             [
                 'name' => 'Accounts',
-                'route' => 'accounts.index',
+                'route' => 'senders.index',
                 'svg' =>
-                    '<circle cx="160" cy="96" r="48" fill="none" stroke="currentColor"  stroke-linecap="round" stroke-linejoin="round" stroke-width="32" /> <circle cx="160" cy="416" r="48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" /> <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"  d="M160 368V144" /><circle cx="352" cy="160" r="48" fill="none" stroke="currentColor"stroke-linecap="round" stroke-linejoin="round" stroke-width="32" /><path d="M352 208c0 128-192 48-192 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" />',
+                    '<rect class="stroke-slate-300" x="48" y="48" width="176" height="176" rx="20" ry="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><rect class="stroke-slate-300" x="288" y="48" width="176" height="176" rx="20" ry="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><rect class="stroke-slate-300" x="48" y="288" width="176" height="176" rx="20" ry="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><rect class="stroke-slate-300" x="288" y="288" width="176" height="176" rx="20" ry="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>',
             ],
             [
                 'name' => 'Api Manager',
@@ -143,8 +153,8 @@
     @endphp
 
     <div id="box-{{ $menu['name'] }}"
-        class="group relative flex gap-x-2 p-2 hover:bg-slate-700 @if ($isActive) bg-slate-700 @endif "
-        title="{{ $menu['name'] }}">
+        class="tooltip group relative flex gap-x-2 p-2 hover:bg-slate-700 @if ($isActive) bg-slate-700 @endif "
+        title="{{ $menu['name'] }}" data-position="right">
         <div class="flex h-6 w-6 flex-none items-center justify-center menu-icon">
             <svg class="h-6 w-6 text-slate-300 fill-slate-300" viewBox="0 0 512 512">@php echo $menu['svg'] @endphp</svg>
         </div>
