@@ -11,6 +11,8 @@ import MessageView from "./MessageView";
 import Tab from "./Tab";
 import ConfirmBox from "./Confirm";
 import Gemini from "./AI/Gemini";
+//import { tooltip } from "./Tooltip";
+import { tooltip } from "@aponahmed/tooltip";
 
 
 
@@ -18,6 +20,10 @@ window.Gemini = Gemini;
 window.axios = axios;
 
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+
+tooltip(".tooltip",{color:"#fff"});
+
+
 
 //Dropdowns
 // Create an array of dropdown elements
