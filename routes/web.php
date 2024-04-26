@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\DomainController;
 use App\Http\Controllers\ReplyController;
+use App\Http\Controllers\SenderController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\SettingsController;
 
@@ -62,18 +63,31 @@ Route::group(['prefix' => 'edesk'], function () {
 
 
 Route::group(['prefix' => 'gdesk'], function () {
-    Route::get('/', [SettingsController::class, 'index'])->name("gdesk");
+    Route::get('/messages/{status?}', [MessageController::class, 'index'])->name('gdesk.index');
 });
 
 Route::group(['prefix' => 'settings'], function () {
     Route::get('/general', [SettingsController::class, 'index'])->name('general');
     Route::get('/auth-logout', [SettingsController::class, 'AuthLogout']);
-
-    Route::get('/accounts', [SettingsController::class, 'index'])->name('accounts.index');
-
     Route::post('/settings/update', [SettingsController::class, 'UpdateSettings']);
     // Routes for the Domain model
     Route::resource('domains', DomainController::class);
+
+    //Sender Routes
+
+    // Show all senders
+    Route::get('/senders', [SenderController::class, 'index'])->name('senders.index');
+    // Show the form for creating a new sender
+    Route::get('/senders/create', [SenderController::class, 'create'])->name('senders.create');
+    // Store a newly created sender in storage
+    Route::post('/senders', [SenderController::class, 'store'])->name('senders.store');
+    // Show the form for editing the specified sender
+    Route::get('/senders/{sender}/edit', [SenderController::class, 'edit'])->name('senders.edit');
+    // Update the specified sender in storage
+    Route::put('/senders/{sender}', [SenderController::class, 'update'])->name('senders.update');
+    // Remove the specified sender from storage
+    Route::delete('/senders/{sender}', [SenderController::class, 'destroy'])->name('senders.destroy');
+
 });
 
 // Routes for the Setting model
