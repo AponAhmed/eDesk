@@ -10,7 +10,7 @@
                 class="settings-input-container overflow-y-auto max-h-full bg-white border border-solid border-slate-200 rounded-md p-4 h-full">
                 <div class="tab-wrap settings-tab">
                     <ul class="flex">
-                        <li class="active section-head px-4 py-2 cursor-pointer" data-id="mailing">Mailing</li>
+                        <li class="active section-head px-4 py-2 cursor-pointer" data-id="mailing">Mailing eDesk</li>
                         <li class="section-head px-4 py-2 cursor-pointer" data-id="aiSettings">AI</li>
                     </ul>
                     <div class="tab-contents-wrap px-4 py-6">
