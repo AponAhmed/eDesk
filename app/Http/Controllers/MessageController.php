@@ -260,7 +260,10 @@ class MessageController extends Controller
         // Create a DOMDocument instance
         $dom = new DOMDocument();
         // Load HTML content
+        $bodyHtml = str_replace('&', '&amp;', $bodyHtml);
+
         $dom->loadHTML($bodyHtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
 
         // Find all tables
         $tables = $dom->getElementsByTagName('table');
@@ -291,11 +294,9 @@ class MessageController extends Controller
 
         $plainText = Helper::htmlToMarkdown($bodyHtml);   // Remove all HTML tags except <br>
         $plainText = strip_tags($plainText, '<br>');
+        $plainText = str_replace('&amp;', '&', $plainText);
         return $plainText;
     }
-
-
-
 
     public static function GetReminder()
     {
