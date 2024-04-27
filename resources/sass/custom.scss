@@ -348,10 +348,10 @@ tr:hover {
     background-color: #f9f9f9;
 }
 
-input[type="text"] {
+input[type="text"],input[type="number"],input[type="password"]  {
     border: 1px solid #ddd;
     width: 100%;
-    border-radius: 2px;
+    padding: 4px 8px;
 }
 
 .sep > * {
