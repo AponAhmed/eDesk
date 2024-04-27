@@ -34,7 +34,14 @@ class Sender extends Model
      */
     public function getSmtpOptionsAttribute($value)
     {
-        return json_decode($value, true);
+        $default = [
+            'host' => null,
+            'port' => null,
+            'account' => null,
+            'password' => null,
+            'security' => null,
+        ];
+        return array_merge($default, json_decode($value, true));
     }
 
     /**
@@ -55,7 +62,14 @@ class Sender extends Model
      */
     public function getImapOptionsAttribute($value)
     {
-        return json_decode($value, true);
+        $default = [
+            'host' => null,
+            'port' => null,
+            'account' => null,
+            'password' => null,
+            'security' => null,
+        ];
+        return array_merge($default, json_decode($value, true));
     }
 
     /**
@@ -109,5 +123,10 @@ class Sender extends Model
     public function setOtherOptionsAttribute($value)
     {
         $this->attributes['other_options'] = json_encode($value);
+    }
+
+    public function updateCount(){
+        $this->daily_send_count = $this->daily_send_count + 1;
+        $this->save();
     }
 }
