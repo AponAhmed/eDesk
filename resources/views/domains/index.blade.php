@@ -3,9 +3,9 @@
 @section('content')
     <div class="dataContainer px-4 w-full">
         <div class="flex py-2 border-b border-solid border-slate-100 mb-3 items-center">
-            <h1 class="font-thin text-xl">List of Domains</h1>
+            <h1 class="font-thin text-xl px-2">List of Domains</h1>
             <a href="{{ route('domains.create') }}"
-                class="popup create-button px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-full shadow-sm ml-4">New
+                class="popup create-button px-4 py-1 font-semibold text-sm bg-cyan-500 text-white rounded-full shadow-sm ml-4">New
                 Domain</a>
         </div>
         <div class="table-wraper overflow-x-auto bg-white p-4">
