@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Utilities\GmailApiMailer;
+use App\Utilities\SMTPMailer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -125,8 +127,18 @@ class Sender extends Model
         $this->attributes['other_options'] = json_encode($value);
     }
 
-    public function updateCount(){
+    public function updateCount()
+    {
         $this->daily_send_count = $this->daily_send_count + 1;
         $this->save();
+    }
+
+    public function getMailer()
+    {
+        if ($this->auth_login_type == 1) {
+            return new GmailApiMailer($this);
+        } else {
+            return new SMTPMailer($this);
+        }
     }
 }
