@@ -77,6 +77,7 @@ Route::group(['prefix' => 'settings'], function () {
 
     // Show all senders
     Route::get('/senders', [SenderController::class, 'index'])->name('senders.index');
+    Route::get('/senders/{sender}/check', [SenderController::class, 'connectionCheck'])->name('senders.check');
     // Show the form for creating a new sender
     Route::get('/senders/create', [SenderController::class, 'create'])->name('senders.create');
     // Store a newly created sender in storage
@@ -87,7 +88,6 @@ Route::group(['prefix' => 'settings'], function () {
     Route::put('/senders/{sender}', [SenderController::class, 'update'])->name('senders.update');
     // Remove the specified sender from storage
     Route::delete('/senders/{sender}', [SenderController::class, 'destroy'])->name('senders.destroy');
-
 });
 
 // Routes for the Setting model
