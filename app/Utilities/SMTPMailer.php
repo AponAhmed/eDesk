@@ -11,6 +11,10 @@ class SMTPMailer implements Mailer
 {
     private $mailer;
     private $smtpConfig;
+    private $to;
+    private $subject;
+    private $body;
+    private $attachments;
     private $options;
 
     public function __construct(private Sender $sender)
@@ -22,6 +26,22 @@ class SMTPMailer implements Mailer
 
     public function sendEmail($to, $subject, $body, $options, $attachments = [])
     {
+        $this->to = $to;
+        $this->subject = $subject;
+        $this->body = $body;
+        $this->attachments = $attachments;
+
+        $defaultOption = [
+            'fromName' => "",
+            'fromEmail' => "",
+            'toName' => "",
+            'CC' => "",
+            'BCC' => "",
+            "Return-Path" => ""
+        ];
+
+        $options = array_merge($defaultOption, $options);
+
         $this->options = $options;
 
         $this->mailer->SetFrom($this->options['fromEmail'], $this->options['fromName']);
@@ -64,7 +84,7 @@ class SMTPMailer implements Mailer
 
     public function checkConnection()
     {
-        return $this->mailer->smtpConnect(['ssl' => ($this->smtpConfig['security'] === 'ssl')]);
+        return $this->mailer->smtpConnect();
     }
 
     public function updateCount()
