@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Interfaces\Mailer;
 use App\Models\Sender;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,13 @@ class SenderController extends Controller
     {
         $senders = Sender::paginate(14); // Paginate by 10 items per page, you can adjust as needed
         return view('senders.index', compact('senders'));
+    }
+
+
+    function connectionCheck($id)
+    {
+        $mailer = Sender::find($id)->getMailer();
+        dd($mailer);
     }
 
     /**
