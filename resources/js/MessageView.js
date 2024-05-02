@@ -89,7 +89,7 @@ export default class MessageView {
 
                 let releaseBtn = this.details.querySelector('#releaseBtn');
                 releaseBtn.addEventListener('click', (e) => {
-                    releaseBtn.innerHTML="Sending...";
+                    releaseBtn.innerHTML = "Sending...";
                     this.releaseMessage().then(() => {
                         window.location.reload();
                     });
@@ -101,7 +101,7 @@ export default class MessageView {
         let id = this.details.querySelector('#reply_id').value;
         let messageDom = this.details.querySelector('#modifiedMessage');
         //console.log(id,messageDom.innerHTML);
-        await axios.post('/release', { id: id, modifiedMsg: messageDom.innerHTML })
+        await axios.post("/" + SUBAPP + '/release', { id: id, modifiedMsg: messageDom.innerHTML })
             .then(response => {
                 this.data = response.data;
             });
@@ -159,44 +159,49 @@ export default class MessageView {
                     replyStr = "Reply Again";
                 }
                 actDom.append(
-                    new el('a').attr('title', `Quick ${replyStr}`).class('flex').attr('data-w',650).class('btn-action').class('popup').class('ml-1').class('px-2').class('py-1').attr('href', `/message/${this.data.id}/reply`)
+                    new el('a').attr('title', `Quick ${replyStr}`).class('flex').attr('data-w', 650).class('btn-action').class('popup').class('ml-1').class('px-2').class('py-1').attr('href', `/${SUBAPP}/message/${this.data.id}/reply`)
                         .html(`<svg class="w-4 mr-1 rotate-y-180" viewBox="0 0 512 512"><path d="M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/></svg>  ${replyStr}`).element
                 );
             }
 
             actDom.append(
-                new el('a').class('flex').class('btn-action').class('popup').class('ml-1').class('px-2').class('py-1').attr('href', `/message/${this.data.id}/redirect`).html('<svg class="w-4 mr-1" viewBox="0 0 512 512"><path d="M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/></svg> Redirect').element
+                new el('a').class('flex').class('btn-action').class('popup').class('ml-1').class('px-2').class('py-1').attr('href', `/${SUBAPP}/message/${this.data.id}/redirect`).html('<svg class="w-4 mr-1" viewBox="0 0 512 512"><path d="M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/></svg> Redirect').element
             );
 
-            if (!labels.includes('spam')) {
-                actDom.append(
-                    new el('a').attr('title', "Mark As Spam").attr('href', `/message/${this.data.id}/spam`).class('flex').event('click', e => {
-                        this.makeRequest(e);
-                    }).class('btn-action').class('ml-1').class('px-2').class('py-1')
-                        .html('<svg class="w-4 mr-1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="208" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32" d="M108.92 108.92l294.16 294.16"/></svg> Spam').element
-                );
-            } else {
-                actDom.append(
-                    new el('a').attr('title', "Not Spam").attr('href', `/message/${this.data.id}/notspam`).event('click', e => {
-                        this.makeRequest(e);
-                    }).class('flex').class('btn-action').class('ml-1').class('px-2').class('py-1').html('<svg class="w-4 mr-1" viewBox="0 0 512 512"><path d="M320 146s24.36-12-64-12a160 160 0 10160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 58l80 80-80 80"/></svg>Not Spam').element
-                );
+            if (SUBAPP == "edesk") {
+                if (!labels.includes('spam')) {
+                    actDom.append(
+                        new el('a').attr('title', "Mark As Spam").attr('href', `/${SUBAPP}/message/${this.data.id}/spam`).class('flex').event('click', e => {
+                            this.makeRequest(e);
+                        }).class('btn-action').class('ml-1').class('px-2').class('py-1')
+                            .html('<svg class="w-4 mr-1" viewBox="0 0 512 512"><circle cx="256" cy="256" r="208" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32" d="M108.92 108.92l294.16 294.16"/></svg> Spam').element
+                    );
+                } else {
+                    actDom.append(
+                        new el('a').attr('title', "Not Spam").attr('href', `/${SUBAPP}/message/${this.data.id}/notspam`).event('click', e => {
+                            this.makeRequest(e);
+                        }).class('flex').class('btn-action').class('ml-1').class('px-2').class('py-1').html('<svg class="w-4 mr-1" viewBox="0 0 512 512"><path d="M320 146s24.36-12-64-12a160 160 0 10160 160" fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 58l80 80-80 80"/></svg>Not Spam').element
+                    );
+                }
+
+
+                if (!labels.includes('local')) {
+                    actDom.append(
+                        new el('a').attr('title', "Mark As Local").attr('href', `/${SUBAPP}/message/${this.data.id}/local`).class('flex').event('click', e => {
+                            this.makeRequest(e);
+                        }).class('btn-action').class('ml-1').class('px-2').class('py-1')
+                            .html('<svg class="w-4 mr-0" viewBox="0 0 512 512"><path d="M256 48c-79.5 0-144 61.39-144 137 0 87 96 224.87 131.25 272.49a15.77 15.77 0 0025.5 0C304 409.89 400 272.07 400 185c0-75.61-64.5-137-144-137z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="256" cy="192" r="48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>').element
+                    );
+                } else {
+                    actDom.append(
+                        new el('a').attr('title', "Mark As Real").class('bg-cyan-300').attr('href', `/${SUBAPP}/message/${this.data.id}/notlocal`).event('click', e => {
+                            this.makeRequest(e);
+                        }).class('flex').class('btn-action').class('ml-1').class('px-2').class('py-1').html('<svg class="w-4 mr-0" viewBox="0 0 512 512"><path d="M256 48c-79.5 0-144 61.39-144 137 0 87 96 224.87 131.25 272.49a15.77 15.77 0 0025.5 0C304 409.89 400 272.07 400 185c0-75.61-64.5-137-144-137z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="256" cy="192" r="48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>').element
+                    );
+                }
             }
 
-            if (!labels.includes('local')) {
-                actDom.append(
-                    new el('a').attr('title', "Mark As Local").attr('href', `/message/${this.data.id}/local`).class('flex').event('click', e => {
-                        this.makeRequest(e);
-                    }).class('btn-action').class('ml-1').class('px-2').class('py-1')
-                        .html('<svg class="w-4 mr-0" viewBox="0 0 512 512"><path d="M256 48c-79.5 0-144 61.39-144 137 0 87 96 224.87 131.25 272.49a15.77 15.77 0 0025.5 0C304 409.89 400 272.07 400 185c0-75.61-64.5-137-144-137z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="256" cy="192" r="48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>').element
-                );
-            } else {
-                actDom.append(
-                    new el('a').attr('title', "Mark As Real").class('bg-cyan-300').attr('href', `/message/${this.data.id}/notlocal`).event('click', e => {
-                        this.makeRequest(e);
-                    }).class('flex').class('btn-action').class('ml-1').class('px-2').class('py-1').html('<svg class="w-4 mr-0" viewBox="0 0 512 512"><path d="M256 48c-79.5 0-144 61.39-144 137 0 87 96 224.87 131.25 272.49a15.77 15.77 0 0025.5 0C304 409.89 400 272.07 400 185c0-75.61-64.5-137-144-137z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><circle cx="256" cy="192" r="48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/></svg>').element
-                );
-            }
+
 
 
             actDom.append(
@@ -226,11 +231,11 @@ export default class MessageView {
         }
 
 
-
-        actDom.append(
-            new el('a').class('popup').attr('href', `/message/${this.data.id}/info`).class('sender-info').html(`<svg class="w-5" viewBox="0 0 512 512"><path d="M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M220 220h32v116"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M208 340h88"/><path d="M248 130a26 26 0 1026 26 26 26 0 00-26-26z"/></svg>`).element
-        );
-
+        if (SUBAPP == "edesk") {
+            actDom.append(
+                new el('a').class('popup').attr('href', `/${SUBAPP}/message/${this.data.id}/info`).class('sender-info').html(`<svg class="w-5" viewBox="0 0 512 512"><path d="M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M220 220h32v116"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M208 340h88"/><path d="M248 130a26 26 0 1026 26 26 26 0 00-26-26z"/></svg>`).element
+            );
+        } 
         return actDom.element;
     }
 
@@ -239,7 +244,7 @@ export default class MessageView {
         let target = event.target;
         target.innerHTML = '<span class="working"></span>';
 
-        await axios.post('/modifi-labels', data)
+        await axios.post("/" + SUBAPP + '/modifi-labels', data)
             .then(response => {
                 if (!response.data.error) {
                     window.location.reload();
@@ -298,13 +303,13 @@ export default class MessageView {
     }
 
     async getdata(id) {
-        await axios.post('/message', { id: id })
+        await axios.post("/" + SUBAPP + '/message', { id: id })
             .then(response => {
                 this.data = response.data;
             });
     }
     async getReplymonitor(id) {
-        await axios.post('/replymonitor', { id: id })
+        await axios.post("/" + SUBAPP + '/replymonitor', { id: id })
             .then(response => {
                 this.data = response.data;
             });
