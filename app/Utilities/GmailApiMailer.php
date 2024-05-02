@@ -2,7 +2,7 @@
 
 namespace App\Utilities;
 
-use App\Interfaces\Mailer;
+use App\Interfaces\MailSender;
 use Google\Client;
 use Google\Service\Gmail\Draft;
 use Google\Service\Gmail\Message;
@@ -14,11 +14,10 @@ use App\Models\Sender;
 use Exception;
 
 // Implement GmailApiMailer using Gmail API
-class GmailApiMailer implements Mailer
+class GmailApiMailer implements MailSender
 {
     private $credentials;
     private $configured = false;
-    private  $token = [];
     public $connect = false;
     private $client;
     private $to;
@@ -69,9 +68,7 @@ class GmailApiMailer implements Mailer
 
     public function checkConnection()
     {
-        // Check connection status with Gmail API
-        // You might implement this method to verify if the Google_Client instance is properly configured
-        return true; // Placeholder return value
+        return $this->connect; // Placeholder return value
     }
 
 
@@ -85,15 +82,12 @@ class GmailApiMailer implements Mailer
         $credentials = env('G_CREDENTIALS', "");
         if ($credentials != "") {
             $this->configured = true;
-            $this->token = $this->sender->auth_token;
         }
         $this->credentials = json_decode(stripslashes($credentials), true);
         if ($this->configured) {
             $this->client = $this->createClient();
         }
     }
-
-
 
     public function createClient($authCode = false)
     {
@@ -218,7 +212,7 @@ class GmailApiMailer implements Mailer
     function loginButton()
     {
         $link = $this->client->createAuthUrl();
-        echo "<button<a href='$link' class=\"google-login button action\"><span style=\"padding: 4px 0;\" class=\"dashicons dashicons-google\"></span> Login</a>";
+        echo "<a href='$link' class=\"google-login button action\"><span style=\"padding: 4px 0;\" class=\"dashicons dashicons-google\"></span> Login</a>";
     }
 
     /**
