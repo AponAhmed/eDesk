@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Interfaces\Mailer;
+use App\Interfaces\MailSender;
 use App\Models\Sender;
 use Illuminate\Http\Request;
 
@@ -22,10 +23,13 @@ class SenderController extends Controller
 
     function connectionCheck($id)
     {
-        $mailer = Sender::find($id)->getMailer();
-        dd($mailer);
-    }
+        $sender = Sender::find($id);
+        //$sender->auth_login_type = true;
+        $mailer = $sender->getMailReceiver();
 
+        $mails = $mailer->getEmails(1);
+        dd($mails); //
+    }
     /**
      * Show the form for creating a new resource.
      *
