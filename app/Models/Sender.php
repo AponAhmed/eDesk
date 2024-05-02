@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Interfaces\MailReceiver;
+use App\Interfaces\MailSender;
 use App\Utilities\GmailApiMailer;
+use App\Utilities\ImapHandler;
 use App\Utilities\SMTPMailer;
+use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,6 +47,9 @@ class Sender extends Model
             'password' => null,
             'security' => null,
         ];
+        if ($value == null) {
+            return $default;
+        }
         return array_merge($default, json_decode($value, true));
     }
 
@@ -71,6 +78,9 @@ class Sender extends Model
             'password' => null,
             'security' => null,
         ];
+        if ($value == null) {
+            return $default;
+        }
         return array_merge($default, json_decode($value, true));
     }
 
@@ -139,6 +149,15 @@ class Sender extends Model
             return new GmailApiMailer($this);
         } else {
             return new SMTPMailer($this);
+        }
+    }
+
+    public function getMailReceiver()
+    {
+        if ($this->auth_login_type == 1) {
+            return new GmailApiMailer($this);
+        } else {
+            return new ImapHandler($this);
         }
     }
 }
