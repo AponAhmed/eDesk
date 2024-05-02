@@ -23,6 +23,7 @@
             temperature: "{!! \App\Models\Settings::get('ai_temperature', '0.7') !!}",
             signPrefix: "{!! \App\Models\Settings::get('ai_signeture_prefix', '') !!}",
         };
+        const SUBAPP = "{{ request()->segment(1) ?? 'edesk' }}";
     </script>
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
