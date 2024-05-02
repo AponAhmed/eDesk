@@ -328,7 +328,7 @@ class GmailApi
     function loginButton()
     {
         $link = $this->client->createAuthUrl();
-        echo "<button<a href='$link' class=\"google-login button action\"><span style=\"padding: 4px 0;\" class=\"dashicons dashicons-google\"></span> Login</a>";
+        echo "<a href='$link' class=\"google-login button action\"><span style=\"padding: 4px 0;\" class=\"dashicons dashicons-google\"></span> Login</a>";
     }
 
     /**
