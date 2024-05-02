@@ -21,7 +21,7 @@ window.axios = axios;
 
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
-tooltip(".tooltip",{color:"#fff"});
+tooltip(".tooltip", { color: "#fff" });
 
 
 
@@ -172,7 +172,7 @@ if (multiActions) {
                 message: `Sure to ${actionLabel} on ${checkedValues.length} items`,
                 yesCallback: () => {
                     axios
-                        .post("/multiple-action", {
+                        .post("/" + SUBAPP + "/multiple-action", {
                             action: action,
                             ids: checkedValues,
                         })
@@ -222,22 +222,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Make additional requests or perform actions as needed
     // Example: Make a request to another endpoint
-    axios
-        .get("/get-count")
-        .then((axiosResponse) => {
-            let data = axiosResponse.data.data;
-            // Iterate over the keys in the response data
-            for (var key in data) {
-                if (data.hasOwnProperty(key)) {
-                    if (data[key] > 0) {
-                        updateBadge("box-" + key, data[key]);
+
+    if (SUBAPP == "edesk" || SUBAPP == "gdesk") {
+        axios
+            .get("/" + SUBAPP + "/get-count")
+            .then((axiosResponse) => {
+                let data = axiosResponse.data.data;
+                // Iterate over the keys in the response data
+                for (var key in data) {
+                    if (data.hasOwnProperty(key)) {
+                        if (data[key] > 0) {
+                            updateBadge("box-" + key, data[key]);
+                        }
                     }
                 }
-            }
-        })
-        .catch((error) => {
-            console.error(error);
-        });
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }
+
 });
 
 function updateBadge(itemId, count) {
