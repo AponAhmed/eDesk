@@ -2,12 +2,12 @@
 
 namespace App\Utilities;
 
-use App\Interfaces\Mailer;
+use App\Interfaces\MailSender;
 use App\Models\Sender;
 use PHPMailer\PHPMailer\PHPMailer;
 
 // Implement SMTPMailer using PHPMailer
-class SMTPMailer implements Mailer
+class SMTPMailer implements MailSender
 {
     private $mailer;
     private $smtpConfig;
