@@ -28,6 +28,19 @@ Route::get('/', [MessageController::class, 'index'])->name('home');
 //Ajax routes
 
 Route::post('/ai', [AiGenerate::class, 'generate'])->name('ai'); //AI
+//Message Actions
+Route::get('/get-count', function () {
+    $messageController = new MessageController();
+    $messageCount = $messageController->getCountAll();
+
+    $gMessageController = new GMessageController();
+    $gMessageCount = $gMessageController->getCountAll();
+
+    return response()->json([
+        'edesk' => $messageCount,
+        'gdesk' => $gMessageCount
+    ]);
+});
 
 //Ends Ajax Routes
 
@@ -40,9 +53,7 @@ Route::group(['prefix' => 'edesk'], function () {
     Route::get('/replies/{status?}', [ReplyController::class, 'index'])->name('messages.replies');
     // Catch-all route for the root URL
 
-    //Message Actions
-    Route::get('/get-count', [MessageController::class, 'getCountData'])->name('get-count');
-
+    //Message Actions  
     Route::post('/replymonitor', [ReplyController::class, 'getMessage']); //details for the replied Message]
     Route::post('/message', [MessageController::class, 'getMessage']); //details for the message]
 
@@ -68,10 +79,7 @@ Route::group(['prefix' => 'edesk'], function () {
 
 Route::group(['prefix' => 'gdesk'], function () {
     //Message Actions
-    Route::get('/get-count', [GMessageController::class, 'getCountData'])->name('get-count');
-
     Route::get('/messages/{status?}', [GMessageController::class, 'index'])->name('gdesk.index');
-
 
     Route::post('/message', [GMessageController::class, 'getMessage']); //details for the message]
 
