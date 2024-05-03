@@ -2,7 +2,7 @@ body {
     overflow: hidden;
 }
 
-.scrollbar-thin{
+.scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: #d5d5d5 #ededed;
 }
@@ -29,7 +29,7 @@ svg {
 }
 
 .nav-wraper {
-	height: calc(100% - 70px);
+    height: calc(100% - 70px);
 }
 
 .dropdown-content {
@@ -79,27 +79,38 @@ svg {
         #logoSvg path:nth-last-child(-n+3) {
             display: block;
         }
+
         #logoSvg {
             width: 67px;
         }
-    }    
+    }
 
     .menu-name {
         display: block;
     }
+
     .badge {
         top: 11px;
         right: 10px;
     }
 
-    .sub-nav > div {
+    .sub-nav .badge {
+        top: -5px;
+        right: 0;
+        font-size: 10px;
+    }
+
+    .sub-nav>div {
         flex-direction: revert;
     }
-    .sub-nav > div > a:last-child .menu-name {
+
+    .sub-nav>div>a:last-child .menu-name {
         display: none;
     }
-    .sub-nav > div svg {
-        width:16px; height:16px;
+
+    .sub-nav>div svg {
+        width: 16px;
+        height: 16px;
     }
 
 }
@@ -348,22 +359,24 @@ tr:hover {
     background-color: #f9f9f9;
 }
 
-input[type="text"],input[type="number"],input[type="password"]  {
+input[type="text"],
+input[type="number"],
+input[type="password"] {
     border: 1px solid #ddd;
     width: 100%;
     padding: 4px 8px;
 }
 
-.sep > * {
+.sep>* {
     margin-left: 10px;
     position: relative;
 }
 
-.sep > :first-child {
+.sep> :first-child {
     margin-left: 0;
 }
 
-.sep > *::after {
+.sep>*::after {
     content: "";
     position: absolute;
     width: 1px;
@@ -373,7 +386,7 @@ input[type="text"],input[type="number"],input[type="password"]  {
     top: 5px;
 }
 
-.sep > *:first-child::after {
+.sep>*:first-child::after {
     display: none;
 }
 
