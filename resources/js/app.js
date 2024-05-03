@@ -219,53 +219,77 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+    setInterval(() => {
+        updateCountBadge();
+    }, 10000);
 
-    // Make additional requests or perform actions as needed
-    // Example: Make a request to another endpoint
-
-    if (SUBAPP == "edesk" || SUBAPP == "gdesk") {
-        axios
-            .get("/" + SUBAPP + "/get-count")
-            .then((axiosResponse) => {
-                let data = axiosResponse.data.data;
-                // Iterate over the keys in the response data
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        if (data[key] > 0) {
-                            updateBadge("box-" + key, data[key]);
-                        }
-                    }
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }
+    updateCountBadge();
 
 });
 
+function updateCountBadge() {
+    axios
+        .get("/get-count")
+        .then((axiosResponse) => {
+            let data = axiosResponse.data;
+            // Sum counts of all box types for 'edesk'
+            let edeskCount = Object.values(data.edesk).reduce((acc, val) => acc + val, 0);
+            // Sum counts of all box types for 'gdesk'
+            let gdeskCount = Object.values(data.gdesk).reduce((acc, val) => acc + val, 0);
+            // Update badge for 'edesk'
+            if (edeskCount > 0) {
+                updateBadge("edeskmenu", edeskCount);
+            }
+            // Update badge for 'gdesk'
+            if (gdeskCount > 0) {
+                updateBadge("gdeskmenu", gdeskCount);
+            }
+
+            // If SUBAPP is 'edesk' or 'gdesk', update badges for specific sub-application
+            if (SUBAPP == "edesk" || SUBAPP == "gdesk") {
+                let subData = data[SUBAPP];
+                // Iterate over the keys in the response data
+                for (var key in subData) {
+                    if (subData.hasOwnProperty(key)) {
+                        if (subData[key] > 0) {
+                            updateBadge("box-" + key, subData[key]);
+                        }
+                    }
+                }
+            }
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+}
+
 function updateBadge(itemId, count) {
-    console.log(itemId);
-    // Get the menu item by ID
     var menuItem = document.getElementById(itemId);
     // Create a badge element
-    var badge = document.createElement("span");
-    // Add Tailwind classes
-    badge.classList.add(
-        "badge",
-        "bg-red-500",
-        "text-white",
-        "rounded-full",
-        "px-1",
-        "ml-2",
-        "text-xs",
-        "absolute",
-        "right-1",
-        "top-1"
-    );
-    badge.innerText = count;
-    // Append the badge to the menu item
-    menuItem.appendChild(badge);
+    var existingBadge = menuItem.querySelector(".badge");
+    if (existingBadge) {
+        existingBadge.innerText = count;
+    } else {
+        var badge = document.createElement("span");
+        // Add Tailwind classes
+        badge.classList.add(
+            "badge",
+            "bg-red-500",
+            "text-white",
+            "rounded-full",
+            "px-1",
+            "ml-2",
+            "text-xs",
+            "absolute",
+            "right-1",
+            "top-1"
+        );
+        badge.innerText = count;
+        // Append the badge to the menu item
+        menuItem.appendChild(badge);
+    }
+
+
 }
 
 // Check if the variable is a DOM object
