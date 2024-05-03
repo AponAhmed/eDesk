@@ -520,12 +520,19 @@ class GMessageController extends Controller
 
     public function getCountData()
     {
+        $boxes = $this->getCountAll();
+        return response()->json(['error' => false, 'data' => $boxes]);
+    }
+    
+    public function getCountAll()
+    {
         $boxes = ['inbox' => 0, 'reminder' => 0, 'outbox' => 0];
         foreach ($boxes as $box => $c) {
             $boxes[$box] = $this->getCount($box);
         }
-        return response()->json(['error' => false, 'data' => $boxes]);
+        return $boxes;
     }
+
 
     /**
      * Display a listing of the resource.
