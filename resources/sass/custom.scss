@@ -57,9 +57,9 @@ svg {
     display: block !important;
 }
 
-.unread.mail-list * {
-    font-weight: 600;
-}
+// .unread.mail-list * {
+//     font-weight: 600;
+// }
 
 .unread.mail-list {
     font-weight: 600;
@@ -130,7 +130,7 @@ svg {
 
             .form-name {
                 min-width: 160px;
-                font-weight: 600;
+                font-weight: 500;
             }
 
             .list-content {
@@ -322,6 +322,12 @@ svg {
         display: flex;
         flex-grow: 1;
         flex-direction: column;
+    }
+
+    .subject-line {
+        font-size: 14px;
+        font-weight: normal;
+        color: #6f6f6f;
     }
 }
 
