@@ -25,7 +25,7 @@
                                 </div>
                             </div>
                             <div class="name-wraper flex flex-col md:flex-row md:items-center ox-h w-full">
-                                <a href="javascript:void(0)" class="form-name md:px-2">{{ $message->name }}</a>
+                                <a href="javascript:void(0)" class="form-name md:px-2 text-base">{{ $message->name }}</a>
                                 <div class="list-content ox-h">
                                     <div class="message-control absolute right-1 top-0 flex">
                                         <div class="leading-none text-sm px-2 pb-[1px] font-mono bg-gray-100 text-gray-700 rounded-full border border-solid border-gray-200"
