@@ -84,8 +84,8 @@ Route::group(['prefix' => 'gdesk'], function () {
     Route::post('/message', [GMessageController::class, 'getMessage']); //details for the message]
 
     Route::post('/release', [ReplyController::class, 'release']); //details for the replied Message]
-    Route::post('/redirect', [GMessageController::class, 'redirect_send'])->name('redirect'); //Redirect the message
-    Route::post('/reply', [GMessageController::class, 'reply_send'])->name('reply'); //Redirect the message
+    Route::post('/redirect', [GMessageController::class, 'redirect_send'])->name('gredirect'); //Redirect the message
+    Route::post('/reply', [GMessageController::class, 'reply_send'])->name('greply'); //Redirect the message
     Route::post('/modifi-labels', [GMessageController::class, 'modifiLabels'])->name('labels.modify'); //Redirect the message
 
     Route::post('/multiple-action', [GMessageController::class, 'multipleAction']); //Redirect the message
