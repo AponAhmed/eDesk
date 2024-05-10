@@ -352,16 +352,14 @@ class GMessageController extends Controller
             $replyMessage = "<p>" . nl2br($request->get('message')) . "</p>";
             $replyMessage .= self::$signature;
 
-
-
             try {
                 //code...
                 $gmail = $message->sender->getMailer();
                 if (!$gmail->configured) {
-                    throw new Exception('You must configure with Google cloude API');
+                    throw new Exception('You must configure Sender');
                 }
                 if (!$gmail->connect) {
-                    throw new Exception('Could not connect to Google');
+                    throw new Exception('Could not connect to Email Server');
                 }
                 $gmail->SentBoxCustomLabel = Settings::get('after_reply_box_name', 'eDesk'); //
                 //Return path
@@ -523,7 +521,7 @@ class GMessageController extends Controller
         $boxes = $this->getCountAll();
         return response()->json(['error' => false, 'data' => $boxes]);
     }
-    
+
     public function getCountAll()
     {
         $boxes = ['inbox' => 0, 'reminder' => 0, 'outbox' => 0];
