@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('email', 256);
             $table->string('subject', 256)->nullable();
             $table->longText('message')->nullable();
-            $table->foreignId('sender_id')->constrained('senders');
+            $table->foreignId('sender_id')->constrained('senders')->onDelete('cascade');
             $table->json('header')->nullable(); //
-            $table->json('labels')->default("[inbox,unread]");
+            $table->string('labels', 255)->default("inbox,unread");
             $table->integer('reminder')->default(0);
             $table->timestamps();
         });
