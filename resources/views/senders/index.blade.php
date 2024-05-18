@@ -8,7 +8,7 @@
                 class="popup create-button px-4 py-1 font-semibold text-sm bg-cyan-500 text-white rounded-full shadow-sm ml-4">New
                 Sender</a>
         </div>
-        <div class="table-wraper overflow-x-auto bg-white p-4 rounded-md border border-gray-200">
+        <div class="data-table table-wraper overflow-x-auto bg-white p-4 rounded-md border border-gray-200">
             <table>
                 <thead>
                     <tr>
