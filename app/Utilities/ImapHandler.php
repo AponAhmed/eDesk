@@ -81,7 +81,9 @@ class ImapHandler implements MailReceiver
         // Process each message
         $emails = [];
         foreach ($messages as $message) {
+            //Deboer Message
             $MessageData = [
+                'object' => $message,
                 'number' => $message->getNumber(),
                 'id' => $message->getId(),
                 'subject' => $message->getSubject(),
@@ -105,6 +107,7 @@ class ImapHandler implements MailReceiver
                 $message->move($movedBox);
             }
         }
+        $message->markAsSeen();
 
         // Close the connection
         $connection->expunge(); // Expunge deleted messages
