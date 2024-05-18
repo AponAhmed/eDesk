@@ -46,7 +46,7 @@ export default class Popup {
                         document.querySelector(_this.appendSelector).insertAdjacentHTML('beforeend', popupHtml);
                         const scriptTags = document.querySelectorAll(`${_this.appendSelector} script`);
                         // Store script tags
-                       
+
                         // Execute each script
                         scriptTags.forEach(script => {
                             const newScript = document.createElement('script');
