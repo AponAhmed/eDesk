@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Http\Traits\MessageTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class GMessage extends Model
 {
-    use HasFactory;
+    use HasFactory, MessageTraits;
 
     protected $fillable = [
         'name', 'email', 'subject', 'message', 'sender_id', 'labels', 'reminder', 'header'
@@ -38,41 +39,7 @@ class GMessage extends Model
         return $this->belongsTo(Sender::class);
     }
 
-    public function snippet($length = 100)
-    {
-        $snippet = substr(strip_tags($this->message), 0, $length);
-        if (strlen($this->message) > $length) {
-            $snippet .= '...';
-        }
-        return $snippet;
-    }
 
-    public function addLabel($label)
-    {
-        $labels = $this->getLabels();
-        $labels[] = $label;
-        $this->updateLabels($labels);
-        return $this;
-    }
-
-    public function removeLabel($label)
-    {
-        $labels = $this->getLabels();
-        $labels = array_diff($labels, [$label]);
-        $this->updateLabels($labels);
-        return $this;
-    }
-
-    public function getLabels()
-    {
-        $labels = $this->labels ? explode(',', $this->labels) : [];
-        return array_filter(array_unique($labels));
-    }
-
-    public function updateLabels(array $labels)
-    {
-        $this->update(['labels' => implode(',', $labels)]);
-    }
 
     public static function createMessage($data)
     {
@@ -98,5 +65,4 @@ class GMessage extends Model
     {
         return \Carbon\Carbon::parse($value)->format('Y-m-d H:i:s');
     }
-
 }
