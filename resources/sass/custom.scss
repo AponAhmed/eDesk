@@ -332,37 +332,41 @@ svg {
 }
 
 // table
+.data-table {
 
-/* Apply a border and set cell spacing */
-table {
-    border-collapse: collapse;
-    width: 100%;
-    border: 1px solid #ddd;
-    font-size: 14px;
-}
+    /* Apply a border and set cell spacing */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #ddd;
+        font-size: 14px;
+    }
 
-/* Style table headers */
-th {
-    background-color: #f2f2f2;
-    text-align: left;
-    padding: 10px;
-}
+    /* Style table headers */
+    th {
+        background-color: #f2f2f2;
+        text-align: left;
+        padding: 10px;
+    }
 
-/* Style table rows alternately for better readability */
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
+    /* Style table rows alternately for better readability */
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
 
-/* Style table cells */
-td,
-th {
-    border: 1px solid #ddd;
-    padding: 2px 10px;
-}
+    /* Style table cells */
+    td,
+    th {
+        border: 1px solid #ddd;
+        padding: 2px 10px;
+    }
 
-/* Hover effect for rows */
-tr:hover {
-    background-color: #f9f9f9;
+    /* Hover effect for rows */
+    tr:hover {
+        background-color: #f9f9f9;
+    }
+
+
 }
 
 input[type="text"],
