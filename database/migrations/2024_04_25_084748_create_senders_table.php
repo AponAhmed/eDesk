@@ -23,6 +23,7 @@ return new class extends Migration
             $table->json('other_options')->nullable();
             $table->unsignedInteger('daily_limit')->default(0);
             $table->unsignedInteger('daily_send_count')->default(0);
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
