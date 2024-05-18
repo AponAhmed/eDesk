@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Http\Traits\MessageTraits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-    use HasFactory;
+    use HasFactory, MessageTraits;
     protected $fillable = [
         'name', 'ip', 'email', 'whatsapp', 'subject', 'reminder', 'message', 'domain_id', 'labels'
     ];
@@ -40,73 +41,7 @@ class Message extends Model
     {
         return $this->belongsTo(Domain::class);
     }
-
-    public function snippet($length = 100)
-    {
-        // Get the message content and trim it to the specified length
-        $snippet = substr(strip_tags($this->message), 0, $length);
-
-        // If the message is longer than the snippet, add an ellipsis
-        if (strlen($this->message) > $length) {
-            $snippet .= '...';
-        }
-
-        return $snippet;
-    }
-
-
-    /**
-     * Add a label to the 'labels' field.
-     *
-     * @param string $label
-     * @return void
-     */
-    public function addLabel($label)
-    {
-        $labels = $this->getLabels();
-        $labels[] = $label;
-        $this->updateLabels($labels);
-        return $this;
-    }
-
-    /**
-     * Remove a label from the 'labels' field.
-     *
-     * @param string $label
-     * @return void
-     */
-    public function removeLabel($label)
-    {
-        $labels = $this->getLabels();
-
-        $labels = array_diff($labels, [$label]);
-        $this->updateLabels($labels);
-        return $this;
-    }
-
-    /**
-     * Get the 'labels' field as an array.
-     *
-     * @return array
-     */
-    public function getLabels()
-    {
-        $labels = $this->labels ? explode(',', $this->labels) : [];
-        return array_filter(array_unique($labels));
-    }
-
-    /**
-     * Update the 'labels' field with the given array of labels.
-     *
-     * @param array $labels
-     * @return void
-     */
-    public function updateLabels(array $labels)
-    {
-        $this->update(['labels' => implode(',', $labels)]);
-    }
-
-
+    
     /**
      * Create a new message.
      *
