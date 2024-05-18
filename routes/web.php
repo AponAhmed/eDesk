@@ -92,8 +92,6 @@ Route::group(['prefix' => 'gdesk'], function () {
     //Delete All
     Route::post('/delete-all', [GMessageController::class, 'deleteAll']); //Redirect the message
 
-
-
     Route::get('/message/{id}/reply', [GMessageController::class, 'reply'])->name('gdesk.reply');
     Route::get('/message/{id}/redirect', [GMessageController::class, 'redirect'])->name('gdesk.redirect');
     Route::get('/message/{id}/delete', [GMessageController::class, 'destroy'])->name('gdesk.delete');
