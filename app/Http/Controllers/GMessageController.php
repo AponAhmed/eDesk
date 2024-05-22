@@ -262,7 +262,7 @@ class GMessageController extends Controller
         // Load HTML content
         $bodyHtml = str_replace('&', '&amp;', $bodyHtml);
 
-        $dom->loadHTML($bodyHtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        @$dom->loadHTML($bodyHtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
 
 
         // Find all tables
