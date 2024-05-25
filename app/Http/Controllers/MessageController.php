@@ -21,21 +21,11 @@ class MessageController extends Controller
      *
      * @return void
      */
-    static $signature = '<p>--<br>
-    Kind regards,<br><br>
-
-    Pranub Dutta<br>
-    SiATEX (BD) Limited<br>
-    House - 8, Road - 6<br>
-    Unit A5 and B5, 5th Floor<br>
-    Niketon, Gulshan 1<br>
-    Dhaka 1212, Bangladesh<br>
-    Ph: (02) 222-855-548 Ext 201<br>
-    sales@siatexltd.com</p>';
-
+    static $signature = "";
 
     public function __construct()
     {
+        self::$signature="<p>" . nl2br(Settings::get('edesk_signature')) . "</p>";
         self::GetReminder();
         $this->middleware('auth');
     }
