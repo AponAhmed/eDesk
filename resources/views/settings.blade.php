@@ -5,15 +5,43 @@
         <div class="flex py-2 border-b border-solid border-slate-100 mb-2 items-center">
             <h1 class="font-thin text-xl px-2">Settings</h1>
         </div>
-        <form id="settingsForm" class="h-full">
+        <form id="settingsForm" class="h-full overflow-hidden">
             <div
-                class="settings-input-container overflow-y-auto max-h-full bg-white border border-solid border-slate-200 rounded-md p-4 h-full">
-                <div class="tab-wrap settings-tab">
+                class="settings-input-container overflow-hidden max-h-full bg-white border border-solid border-slate-200 rounded-md p-4 h-full">
+                <div class="tab-wrap settings-tab h-[calc(100%-40px)] overflow-hidden">
                     <ul class="flex">
-                        <li class="active section-head px-4 py-2 cursor-pointer" data-id="mailing">Mailing eDesk</li>
+                        <li class="active section-head px-4 py-2 cursor-pointer" data-id="mailing">eDesk</li>
+                        <li class="section-head px-4 py-2 cursor-pointer" data-id="gdesk">gDesk</li>
                         <li class="section-head px-4 py-2 cursor-pointer" data-id="aiSettings">AI</li>
                     </ul>
-                    <div class="tab-contents-wrap px-4 py-6">
+                    <div class="tab-contents-wrap px-4 py-6 overflow-y-auto scrollbar-thin">
+                        <section id="gdesk" class="tab-pan">
+                            <div class="w-full md:w-2/4">
+
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Reply to Name</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <input class="w-full border rounded px-2 py-1" type="text"
+                                            name="settings[gadmin_name]" value="<?php echo $Settings::get('gadmin_name', 'SiATEX'); ?>">
+                                        <span class="text-gray-500 text-sm">Reply to Name Who Receives Replies</span>
+                                    </div>
+                                </div>
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Reply to Email</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <input class="w-full border rounded px-2 py-1" type="email"
+                                            name="settings[gadmin_email]" value="<?php echo $Settings::get('gadmin_email', 'admin@siatexltd.com'); ?>">
+                                        <span class="text-gray-500 text-sm">Reply to  Email Address to Receive reply mails</span>
+                                    </div>
+                                </div>
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Signature</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <textarea rows="10" name="settings[gdesk_signature]" class="w-full scrollbar-thin border border-gray-300 p-4"><?php echo $Settings::get('gdesk_signature', ''); ?></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                         <section id="aiSettings" class="tab-pan ">
 
                             <div class="flex items-center">
@@ -27,8 +55,8 @@
                                 </select>
                             </div>
                             <hr class="my-4">
-                            <div class="flex gap-7">
-                                <div class="w-5/12">
+                            <div class="flex flex-col md:flex-row gap-7">
+                                <div class="w-full md:w-5/12 ">
                                     <div
                                         class="gemini-settings optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
                                         <label class="w-32">API KEY</label> <!-- Adjust the width as needed -->
@@ -190,20 +218,21 @@
                                         <label class="w-32">Signature Filter</label> <!-- Adjust the width as needed -->
                                         <div class="flex-1 md:ml-4 ml-0">
                                             <textarea placeholder="Best regards," rows="2" name="settings[ai_signeture_prefix]"
-                                                class="p-2 rounded border border-gray-300 bg-transparent w-full h-full"
-                                                placeholder="Write a reply in short-sentence to this email using the hints below:"><?php echo $Settings::get(
-                                                    'ai_signeture_prefix',""); ?></textarea>
+                                                class="p-2 scrollbar-thin rounded border border-gray-300 bg-transparent w-full h-full"
+                                                placeholder="Write a reply in short-sentence to this email using the hints below:"><?php echo $Settings::get('ai_signeture_prefix', ''); ?></textarea>
 
-                                            <span class="text-gray-500 text-sm">(each should new Line) Prefix text of signature and remove rest..</span>
+                                            <span class="text-gray-500 text-sm">(each should new Line) Prefix text of
+                                                signature and remove rest..</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="w-7/12">
+                                <div class="w-full md:w-7/12 mt-8 md:mt-0">
                                     <div class="flex-column">
                                         <label class="text-sm text-gray-600 mb-1 block">Information About your
                                             Company</label>
                                         <textarea rows="12" name="settings[ai_about_company]"
-                                            class="p-2 rounded border border-gray-300 bg-transparent w-full h-full" placeholder="About Your Company"><?php echo $Settings::get('ai_about_company', ''); ?></textarea>
+                                            class="scrollbar-thin p-2 rounded border border-gray-300 bg-transparent w-full h-full"
+                                            placeholder="About Your Company"><?php echo $Settings::get('ai_about_company', ''); ?></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -247,7 +276,7 @@
                             @endif
 
                             <hr class="my-4">
-                            <div class="w-2/4">
+                            <div class="w-full md:w-2/4">
                                 <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
                                     <label class="w-32">Replied Box</label> <!-- Adjust the width as needed -->
                                     <div class="flex-1 md:ml-4 ml-0">
@@ -285,7 +314,15 @@
                                             information</span>
                                     </div>
                                 </div>
-                                <div class="w-2/4">
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Signature</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <textarea rows="5" name="settings[edesk_signature]" class="scrollbar-thin w-full border border-gray-300 p-4"><?php echo $Settings::get('edesk_signature', ''); ?></textarea>
+
+                                        <span class="text-gray-500 text-sm"></span>
+                                    </div>
+                                </div>
+                            </div>
                         </section>
                     </div>
                 </div>
