@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GMessage;
 use App\Models\Sender;
+use App\Utilities\BounceHandler;
 use Illuminate\Http\Request;
 use Symfony\Component\VarDumper\VarDumper;
 use Ddeboer\Imap\Message\EmailAddress;
@@ -39,10 +40,32 @@ class CronController extends Controller
         echo "::in Progress::";
     }
 
+    function isMessageBounce($rowMessage)
+    {
+        $BounceHandler = new BounceHandler([]);
+        $bounceReport = $BounceHandler->get_the_facts($rowMessage);
+
+        if (isset($bounceReport[0]) && ($bounceReport[0]['action'] == 'failed' || $bounceReport[0]['action'] == 'Failed' || $bounceReport[0]['action'] == 'transient')) {
+            return true;
+        }
+        return false;
+    }
+
     private function getByIMAP(Sender $account)
     {
-        $messages = $account->getMailReceiver()->getEmails(5);
+        $messages = $account->getMailReceiver()->getEmails(
+            1,
+            [
+                'markSeen' => true,
+                'mailBox' => "INBOX",
+            ]
+        );
+
         foreach ($messages as $message) {
+            if ($this->isMessageBounce($message['row'])) {
+                echo "Message Bounced detected and ingonred to download<br>";
+                continue;
+            }
             $messageObject = $message['object'];
             // Extract relevant data from the message object
             $name = $message['from']->getName() ?? 'Unknown Sender';
@@ -64,7 +87,6 @@ class CronController extends Controller
                     'labels' => "inbox,unread",
                 ]);
                 echo "Mail Received by IMAP from: " . $name . "<br>";
-                
             } catch (\Throwable $th) {
                 // Handle any errors here
                 echo $th->getMessage();
