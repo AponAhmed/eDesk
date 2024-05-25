@@ -21,21 +21,13 @@ class GMessageController extends Controller
      *
      * @return void
      */
-    static $signature = '<p>--<br>
-    Kind regards,<br><br>
+    static $signature = "";
 
-    Pranub Dutta<br>
-    SiATEX (BD) Limited<br>
-    House - 8, Road - 6<br>
-    Unit A5 and B5, 5th Floor<br>
-    Niketon, Gulshan 1<br>
-    Dhaka 1212, Bangladesh<br>
-    Ph: (02) 222-855-548 Ext 201<br>
-    sales@siatexltd.com</p>';
 
 
     public function __construct()
     {
+        self::$signature = "<p>" . nl2br(Settings::get('gdesk_signature')) . "</p>";
         self::GetReminder();
         $this->middleware('auth');
     }
@@ -211,7 +203,7 @@ class GMessageController extends Controller
     function redirect($id)
     {
         $emails = [];
-        $emails[Settings::get('admin_email')] = Settings::get('admin_name');
+        $emails[Settings::get('gadmin_email')] = Settings::get('gadmin_name');
         return view('redirect', array('id' => $id, 'emails' => $emails));
     }
 
@@ -223,9 +215,7 @@ class GMessageController extends Controller
         $plainText = $this->removeMobileNumbersAndEmails($plainText);
 
         $emails = [];
-        $emails[Settings::get('admin_email')] = Settings::get('admin_name');
-        $emails['admin@siatexltd.com'] = "Admin";
-
+        $emails[Settings::get('gadmin_email')] = Settings::get('gadmin_name');
         return view('reply', array('id' => $id, 'emails' => $emails, 'query' => $plainText));
     }
 
@@ -354,14 +344,14 @@ class GMessageController extends Controller
 
             try {
                 //code...
-                $gmail = $message->sender->getMailer();
-                if (!$gmail->configured) {
-                    throw new Exception('You must configure Sender');
-                }
-                if (!$gmail->connect) {
+                $mailer = $message->sender->getMailer();
+
+
+                if (!$mailer->checkConnection()) {
                     throw new Exception('Could not connect to Email Server');
                 }
-                $gmail->SentBoxCustomLabel = Settings::get('after_reply_box_name', 'eDesk'); //
+
+                //$mailer->SentBoxCustomLabel = Settings::get('after_reply_box_name', 'eDesk'); //
                 //Return path
                 $returnToStr = $request->get('return_to');
 
@@ -397,7 +387,7 @@ class GMessageController extends Controller
                         throw new Exception("reply data could not stored");
                     }
                 } else {
-                    $gmail->send($toRmail, "Re: " . $message->subject, $replyMessage, $options, $attachment);
+                    $mailer->sendEmail($toRmail, "Re: " . $message->subject, $replyMessage, $options, $attachment);
                 }
                 $message->removeLabel('inbox')->addLabel('sent');
                 Session::flash('success', 'Message Succefully Sent.');
@@ -430,15 +420,15 @@ class GMessageController extends Controller
     {
         if ($request->has('message_id')) {
             try {
-                $gmail = new GmailApi();
-                if (!$gmail->configured) {
-                    throw new Exception('You must configure with Google cloude API');
-                }
-                if (!$gmail->connect) {
-                    throw new Exception('Could not connect to Google');
-                }
-                $gmail->SentBoxCustomLabel = Settings::get('after_redirect_box_name', 'eDesk-Redirect'); //
                 $message = Message::find($request->get('message_id'));
+                //code...
+                $mailer = $message->sender->getMailer();
+                if (!$mailer->checkConnection()) {
+                    throw new Exception('Could not connect to Email Server');
+                }
+
+                //$gmail->SentBoxCustomLabel = Settings::get('after_redirect_box_name', 'eDesk-Redirect'); //
+
                 //Receiver
                 $receiverStr = $request->get('redirect_to');
                 $receiver = explode(":", $receiverStr);
@@ -463,7 +453,7 @@ class GMessageController extends Controller
                     'toName' => $AdminName,
                     'Return-Path' => $message->email,
                 ];
-                $gmail->send($AdminEmail, $message->subject, $message->message, $options);
+                $mailer->sendEmail($AdminEmail, $message->subject, $message->message, $options);
 
                 $message->removeLabel('inbox')->addLabel('redirect');
                 Session::flash('success', 'Message Succefully Redirected.');
