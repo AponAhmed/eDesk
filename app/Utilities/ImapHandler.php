@@ -54,8 +54,12 @@ class ImapHandler implements MailReceiver
         return $search;
     }
 
-    public function getEmails($count = 0, $mailbox = 'INBOX', $order = 'DESC', $moveToLabel = null)
+    public function getEmails($count = 0,  $options = [])
     {
+        $mailbox = $options['mailBox'] ?? 'INBOX';
+        $order = $options['order'] ?? 'DESC';
+        $moveToLabel = $options['moveToLabel'] ?? null;
+        
         // Connect to the IMAP server
         $connection = $this->server->authenticate($this->sender->imap_options['account'], $this->sender->imap_options['password']);
 
@@ -83,6 +87,7 @@ class ImapHandler implements MailReceiver
         foreach ($messages as $message) {
             //Deboer Message
             $MessageData = [
+                'row' => $message->getRawMessage(),
                 'object' => $message,
                 'number' => $message->getNumber(),
                 'id' => $message->getId(),
@@ -107,7 +112,9 @@ class ImapHandler implements MailReceiver
                 $message->move($movedBox);
             }
         }
-        $message->markAsSeen();
+        if (isset($options['markSeen']) && $options['markSeen'] === true) {
+            $message->markAsSeen();
+        }
 
         // Close the connection
         $connection->expunge(); // Expunge deleted messages
