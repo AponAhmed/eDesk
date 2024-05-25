@@ -1,4 +1,4 @@
-<form method="POST" action="{{ route('redirect') }}" class="ajx">
+<form method="POST" action="{{ route(request()->segment(1) == 'gdesk' ? 'gredirect' : 'redirect') }}" class="ajx">
     @csrf
     <input type="hidden" name="message_id" value="{{ $id }}">
     <div class="mb-4">
