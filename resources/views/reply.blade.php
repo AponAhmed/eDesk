@@ -1,8 +1,9 @@
-<form method="POST" enctype='multipart/form-data' action="{{ route(request()->segment(1) == 'gdesk' ? 'greply' : 'reply') }}"
-    class="ajx">
+<form method="POST" enctype='multipart/form-data'
+    action="{{ route(request()->segment(1) == 'gdesk' ? 'greply' : 'reply') }}" class="ajx">
     @csrf
     <input type="hidden" name="message_id" value="{{ $id }}">
     <h3 class="text-lg font-light mb-4">Reply</h3>
+   
 
     <div class="mb-4 relative">
         <div class="absolute right-0 top-[-25px] flex items-center">
