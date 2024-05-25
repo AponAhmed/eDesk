@@ -159,7 +159,8 @@ export default class MessageView {
                     replyStr = "Reply Again";
                 }
                 actDom.append(
-                    new el('a').attr('title', `Quick ${replyStr}`).class('flex').attr('data-w', 650).class('btn-action').class('popup').class('ml-1').class('px-2').class('py-1').attr('href', `/${SUBAPP}/message/${this.data.id}/reply`)
+                    new el('a').attr('title', `Quick ${replyStr}`)
+                        .class('flex').attr('data-w', 900).class('btn-action').class('popup').class('ml-1').class('px-2').class('py-1').attr('href', `/${SUBAPP}/message/${this.data.id}/reply`)
                         .html(`<svg class="w-4 mr-1 rotate-y-180" viewBox="0 0 512 512"><path d="M448 256L272 88v96C103.57 184 64 304.77 64 424c48.61-62.24 91.6-96 208-96v96z" fill="none" stroke="currentColor" stroke-linejoin="round" stroke-width="32"/></svg>  ${replyStr}`).element
                 );
             }
@@ -235,7 +236,7 @@ export default class MessageView {
             actDom.append(
                 new el('a').class('popup').attr('href', `/${SUBAPP}/message/${this.data.id}/info`).class('sender-info').html(`<svg class="w-5" viewBox="0 0 512 512"><path d="M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z" fill="none" stroke="currentColor" stroke-miterlimit="10" stroke-width="32"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M220 220h32v116"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M208 340h88"/><path d="M248 130a26 26 0 1026 26 26 26 0 00-26-26z"/></svg>`).element
             );
-        } 
+        }
         return actDom.element;
     }
 
