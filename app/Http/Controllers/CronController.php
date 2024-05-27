@@ -21,16 +21,20 @@ class CronController extends Controller
     //
     public function get()
     {
-        foreach ($this->accounts as $account) {
-            try {
-                if ($account->auth_login_type != 1) {
-                    $this->getByIMAP($account);
-                } else {
-                    $this->getByAPI($account);
+        if (count($this->accounts) > 0) {
+            foreach ($this->accounts as $account) {
+                try {
+                    if ($account->auth_login_type != 1) {
+                        $this->getByIMAP($account);
+                    } else {
+                        $this->getByAPI($account);
+                    }
+                } catch (\Throwable $th) {
+                    throw $th;
                 }
-            } catch (\Throwable $th) {
-                throw $th;
             }
+        } else {
+            echo "No Account found.";
         }
     }
 
