@@ -21,7 +21,7 @@
             model: "{!! \App\Models\Settings::get('ai_data_model', 'gemini-pro') !!}",
             about: `{!! str_replace(["\r\n", "\n", "\r"], "\\n", addslashes(\App\Models\Settings::get('ai_about_company', ''))) !!}`,
             temperature: "{!! \App\Models\Settings::get('ai_temperature', '0.7') !!}",
-            signPrefix: "{!! \App\Models\Settings::get('ai_signeture_prefix', '') !!}",
+            signPrefix: "{!! str_replace(["\r\n", "\n", "\r"], "\\n", addslashes(\App\Models\Settings::get('ai_signeture_prefix', ''))) !!}"
         };
         const SUBAPP = "{{ request()->segment(1) ?? 'edesk' }}";
     </script>
