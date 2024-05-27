@@ -4,9 +4,9 @@
 @endphp
 
 
-<div class="flex flex-col md:justify-around bg-slate-950">
+<div class="flex flex-col md:justify-around bg-slate-950 ">
     <a  id="edeskmenu" href="{{ route('home') }}"
-        class="{{ $currentParent == 'edesk' ? 'bg-slate-900' : '' }} relative font-normal text-sm text-slate-400 leading-none flex p-2 items-center justify-center">
+        class="edeskmenu {{ $currentParent == 'edesk' ? 'bg-slate-900' : '' }} relative font-normal text-sm text-slate-400 leading-none flex p-2 items-center justify-center">
         <div class="flex flex-none items-center justify-center menu-icon">
             <svg class="w-4 h-4 p-[2px]" width="32" height="32" viewBox="0 0 32 32" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
@@ -21,7 +21,7 @@
         <span class="sub-menu-title menu-name ml-1 font-normal text-sm text-slate-400 leading-none hidden">eDesk</span>
     </a>
     <a id="gdeskmenu" href="{{ route('gdesk.index') }}"
-        class="{{ $currentParent == 'gdesk' ? 'bg-slate-900' : '' }}  relative font-normal text-sm text-slate-400 leading-none flex justify-center items-center p-2 ">
+        class="gdeskmenu {{ $currentParent == 'gdesk' ? 'bg-slate-900' : '' }}  relative font-normal text-sm text-slate-400 leading-none flex justify-center items-center p-2 ">
         <div class="flex flex-none items-center justify-center menu-icon">
             <svg class="w-4 h-4 p-[2px]" width="32" height="32" viewBox="0 0 32 32" fill="none"
                 xmlns="http://www.w3.org/2000/svg">
