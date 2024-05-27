@@ -252,7 +252,7 @@ function updateCountBadge() {
                 for (var key in subData) {
                     if (subData.hasOwnProperty(key)) {
                         if (subData[key] > 0) {
-                            updateBadge("box-" + key, subData[key]);
+                            updateBadge("box-" + key, subData[key], true);
                         }
                     }
                 }
@@ -263,33 +263,37 @@ function updateCountBadge() {
         });
 }
 
-function updateBadge(itemId, count) {
-    var menuItem = document.getElementById(itemId);
-    // Create a badge element
-    var existingBadge = menuItem.querySelector(".badge");
-    if (existingBadge) {
-        existingBadge.innerText = count;
+function updateBadge(itemId, count, id = false) {
+    if (id) {
+        var menuItems = document.querySelectorAll(`#${itemId}`);
     } else {
-        var badge = document.createElement("span");
-        // Add Tailwind classes
-        badge.classList.add(
-            "badge",
-            "bg-red-500",
-            "text-white",
-            "rounded-full",
-            "px-1",
-            "ml-2",
-            "text-xs",
-            "absolute",
-            "right-1",
-            "top-1"
-        );
-        badge.innerText = count;
-        // Append the badge to the menu item
-        menuItem.appendChild(badge);
+        var menuItems = document.querySelectorAll(`.${itemId}`);
     }
-
-
+    // Create a badge element
+    menuItems.forEach(menuItem => {
+        var existingBadge = menuItem.querySelector(".badge");
+        if (existingBadge) {
+            existingBadge.innerText = count;
+        } else {
+            var badge = document.createElement("span");
+            // Add Tailwind classes
+            badge.classList.add(
+                "badge",
+                "bg-red-500",
+                "text-white",
+                "rounded-full",
+                "px-1",
+                "ml-2",
+                "text-xs",
+                "absolute",
+                "right-1",
+                "top-1"
+            );
+            badge.innerText = count;
+            // Append the badge to the menu item
+            menuItem.appendChild(badge);
+        }
+    });
 }
 
 // Check if the variable is a DOM object
