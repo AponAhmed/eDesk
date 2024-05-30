@@ -1,5 +1,5 @@
 <!-- Mobile menu button -->
-<div class="flex">
+<div class="flex items-center">
     <button id="menuTaggler" type="button"
         class="relative inline-flex items-center justify-center rounded-sm bg-gray-50 p-1 text-gray-400 hover:bg-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
         aria-controls="mobile-menu" aria-expanded="false">
@@ -17,7 +17,7 @@
         </svg>
     </button>
 
-    <div class="bg-slate-700 p-1 h-8 w-8 rounded-md mr-2 md:hidden flex items-center justify-center ml-3">
+    <div class="bg-slate-700 p-1 h-8 w-8 rounded-md md:hidden flex items-center justify-center ml-3">
         <svg class="w-5 h-5 pl-[1px] pt-[1px]" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
             @if (request()->segment(1) == 'edesk')
                 <path
@@ -36,6 +36,17 @@
             @endif
         </svg>
     </div>
+
+    @if (request()->segment(1) == 'gdesk')
+        <a href="{{ route('gdesk.newmessage') }}"
+            class="popup  bg-[#f03a3a] px-2 rounded-md flex items-center ml-3 text-white h-7 text-sm" data-w="900">
+            <svg class="w-4 h-4 text-white stroke-white mr-1" viewBox="0 0 512 512">
+                <path d="M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48" fill="none"
+                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" />
+                <path class="fill-white"
+                    d="M459.94 53.25a16.06 16.06 0 00-23.22-.56L424.35 65a8 8 0 000 11.31l11.34 11.32a8 8 0 0011.34 0l12.06-12c6.1-6.09 6.67-16.01.85-22.38zM399.34 90L218.82 270.2a9 9 0 00-2.31 3.93L208.16 299a3.91 3.91 0 004.86 4.86l24.85-8.35a9 9 0 003.93-2.31L422 112.66a9 9 0 000-12.66l-9.95-10a9 9 0 00-12.71 0z" />
+            </svg>Write new</a>
+    @endif
 </div>
 
 
