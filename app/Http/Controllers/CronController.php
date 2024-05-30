@@ -64,6 +64,13 @@ class CronController extends Controller
                 'mailBox' => "INBOX",
             ]
         );
+        if (count($messages) < 1) {
+            echo "No message found in " . $account->email_address . "<br>";
+        } else {
+
+            echo "Mail Get by IMAP: " . $account->email_address . "<br>";
+        }
+
 
         foreach ($messages as $message) {
             if ($this->isMessageBounce($message['row'])) {
