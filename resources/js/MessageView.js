@@ -1,4 +1,4 @@
-const activeClass = 'bg-slate-100';
+const activeClass = 'bg-gray-200';
 import axios from "axios";
 import popup from './popup';
 import { Dombuilder as el } from "@aponahmed/dombuilder";
