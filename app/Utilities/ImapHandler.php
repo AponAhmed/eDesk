@@ -24,10 +24,14 @@ class ImapHandler implements MailReceiver
     {
         $host = $this->sender->imap_options['host'];
         $port = $this->sender->imap_options['port'];
-        $flags = $this->sender->imap_options['flags'] ?? "/imap/ssl/validate-cert";
+        $flags = $this->sender->imap_options['flags'] ?? "/imap/ssl/novalidate-cert";//"/imap/ssl/validate-cert"
         $parameters = $this->getParameters();
 
-        $this->server = new Server($host, $port, $flags, $parameters);
+        try {
+            $this->server = new Server($host, $port, $flags, $parameters);
+        } catch (\Exception $e) {
+            error_log("Error initializing IMAP server: " . $e->getMessage());
+        }
     }
 
     private function getParameters(): array
@@ -59,7 +63,7 @@ class ImapHandler implements MailReceiver
         $mailbox = $options['mailBox'] ?? 'INBOX';
         $order = $options['order'] ?? 'DESC';
         $moveToLabel = $options['moveToLabel'] ?? null;
-        
+
         // Connect to the IMAP server
         $connection = $this->server->authenticate($this->sender->imap_options['account'], $this->sender->imap_options['password']);
 
@@ -100,20 +104,19 @@ class ImapHandler implements MailReceiver
             ];
             $emails[] = $MessageData;
 
+            // Move emails to another label if requested
+            if ($movedBox !== false) {
+                $message->move($movedBox);
+            }
+            // Mark the message as seen (optional)
+            if (isset($options['markSeen']) && $options['markSeen'] === true) {
+                $message->markAsSeen();
+            }
+
             // If $count is specified and reached, break out of the loop
             if ($count > 0 && count($emails) >= $count) {
                 break;
             }
-        }
-
-        // Move emails to another label if requested
-        if ($movedBox !== false) {
-            foreach ($messages as $message) {
-                $message->move($movedBox);
-            }
-        }
-        if (isset($options['markSeen']) && $options['markSeen'] === true) {
-            $message->markAsSeen();
         }
 
         // Close the connection
