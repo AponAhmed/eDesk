@@ -122,7 +122,7 @@ if (AuthLogoutBtn) {
     AuthLogoutBtn.addEventListener("click", (e) => {
         let target = e.target;
         target.innerHTML = '<span class="working"></span>';
-        axios.get("/auth-logout").then((response) => {
+        axios.get("settings/auth-logout").then((response) => {
             if (!response.data.error) {
                 window.location.reload();
             }
