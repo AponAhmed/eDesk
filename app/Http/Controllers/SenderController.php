@@ -21,6 +21,11 @@ class SenderController extends Controller
     }
 
 
+    function AuthLoginRedirect()
+    {
+
+    }
+
     function connectionCheck($id)
     {
         $sender = Sender::find($id);
