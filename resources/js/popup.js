@@ -17,7 +17,13 @@ export default class Popup {
         const _this = this;
 
         popUpTog.forEach(function (el) {
-            el.addEventListener("click", function (e) {
+            // Remove the existing event listener if it exists
+            if (el.popupClickHandler) {
+                el.removeEventListener("click", el.popupClickHandler);
+            }
+
+            // Define the event handler
+            const eventHandler = function (e) {
                 _this.dom = this;
                 _this.domExistingHtml = _this.dom.innerHTML;
                 _this.dom.innerHTML = "<span class='working'></span>";
@@ -104,7 +110,13 @@ export default class Popup {
 
                         // ntf(error, "error"); //error.response.headers);
                     });
-            });
+            };
+
+            // Store the event handler on the element
+            el.popupClickHandler = eventHandler;
+
+            // Add the event listener
+            el.addEventListener("click", eventHandler);
         });
     }
 }
