@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AiGenerate;
+use App\Utilities\GoogleApiClient;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MessageController;
@@ -25,9 +26,17 @@ use App\Http\Controllers\SettingsController;
 
 Auth::routes(['register' => false]);
 Route::get('/', [MessageController::class, 'index'])->name('home');
+Route::get('/google-auth-redirect', [SenderController::class, 'AuthLoginRedirect'])->name('authloginredirect');
 //Ajax routes
 
+Route::get('/test', function () {
+
+    $client = new GoogleApiClient();
+    dd($client->AuthLink());
+});
+
 Route::post('/ai', [AiGenerate::class, 'generate'])->name('ai'); //AI
+
 //Message Actions
 Route::get('/get-count', function () {
     $messageController = new MessageController();
@@ -78,6 +87,9 @@ Route::group(['prefix' => 'edesk'], function () {
 
 
 Route::group(['prefix' => 'gdesk'], function () {
+    Route::get('/write-new', [GMessageController::class, 'newMessage'])->name('gdesk.newmessage'); //details for the message]
+    Route::post('/send-new', [GMessageController::class, 'sendNew'])->name('sendnew'); //Redirect the message
+
     //Message Actions
     Route::get('/messages/{status?}', [GMessageController::class, 'index'])->name('gdesk.index');
 
@@ -99,7 +111,7 @@ Route::group(['prefix' => 'gdesk'], function () {
 
 Route::group(['prefix' => 'settings'], function () {
     Route::get('/general', [SettingsController::class, 'index'])->name('general');
-    Route::get('/auth-logout', [SettingsController::class, 'AuthLogout']);
+    Route::get('/auth-logout', [SettingsController::class, 'AuthLogout'])->name('authlogout');
     Route::post('/settings/update', [SettingsController::class, 'UpdateSettings']);
     // Routes for the Domain model
     Route::resource('domains', DomainController::class);
