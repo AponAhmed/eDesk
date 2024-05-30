@@ -283,6 +283,7 @@ class BounceHandler
         'delivery problem',
         'delivery reports about your email',
         'delivery status notif',
+        'delivery status notification',
         'failure delivery',
         'failure notice',
         'mail delivery fail',            #catches failure and failed
