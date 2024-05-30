@@ -60,9 +60,9 @@ class GmailApiMailer implements MailSender
         // Send the message
         try {
             $service->users_messages->send('me', $message);
-            echo 'Message has been sent';
+            return true;
         } catch (Exception $e) {
-            echo 'An error occurred: ' . $e->getMessage();
+            return false;
         }
     }
 
@@ -92,7 +92,8 @@ class GmailApiMailer implements MailSender
     public function createClient($authCode = false)
     {
         $client = new Client();
-        $client->setApplicationName("gApiContact");
+        $client->setApplicationName("eDesk");
+        $client->setRedirectUri("https://edesk.siatexmail.com/google-auth-redirect"); //Static URL Just For Test
         $client->setScopes(Gmail::MAIL_GOOGLE_COM);
         $client->setAuthConfig($this->credentials);
         $client->setAccessType("offline");
@@ -113,16 +114,12 @@ class GmailApiMailer implements MailSender
                         if ($res['error'] && !$authCode) {
                             $this->sender->auth_token = "";
                             $this->sender->update();
-                            //var_dump($this->token);
                             $this->connect = false;
                             return $client;
                         }
                     }
                 } catch (Exception $e) {
                     echo "Not Geting Refresh Token; - " . $e;
-                    //echo $e;
-                    //$this->department->oauth_token = "";
-                    //$this->department->save();
                     $this->connect = false;
                     return $client;
                 }
