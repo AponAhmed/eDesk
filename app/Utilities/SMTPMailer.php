@@ -28,7 +28,7 @@ class SMTPMailer implements MailSender
     {
         $this->to = $to;
         $this->subject = $subject;
-        $this->body = $body;
+        $this->body = "<div style=\"text-align: justify;line-height: 1.6;\">" . $body . "</div>";
         $this->attachments = $attachments;
 
         $defaultOption = [
@@ -69,17 +69,26 @@ class SMTPMailer implements MailSender
             }
         }
 
-
         $this->mailer->isHTML(true);
         $this->mailer->Subject = $subject;
-        $this->mailer->Body = $body;
-
+        $this->mailer->Body = $this->body;
+        $this->mailer->AltBody = $this->htmlToPlainText($this->body);
+        $this->mailer->WordWrap = 70; // Set the wrap length
         if (!$this->mailer->send()) {
             return false;
         } else {
             $this->updateCount();
             return true;
         }
+    }
+
+    function htmlToPlainText($html)
+    {
+        // Convert HTML entities to their corresponding characters
+        $plainText = html_entity_decode($html, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        // Remove HTML tags
+        $plainText = strip_tags($plainText);
+        return $plainText;
     }
 
     public function checkConnection()
@@ -99,7 +108,23 @@ class SMTPMailer implements MailSender
         $this->mailer->SMTPAuth = true;
         $this->mailer->Username = $this->smtpConfig['account'];
         $this->mailer->Password = $this->smtpConfig['password'];
-        $this->mailer->SMTPSecure = $this->smtpConfig['security'];
+
+        $sq = $this->smtpConfig['security'];
+        if (empty($sq) || $sq == 'none' ||  $sq == 'auto') {
+            $sq = PHPMailer::ENCRYPTION_SMTPS;
+        }
+
+        $this->mailer->SMTPSecure = $sq; //  : PHPMailer::ENCRYPTION_SMTPS;  PHPMailer::ENCRYPTION_STARTTLS;          //Enable implicit TLS encryption
+
+        //$this->mailer->SMTPSecure = $this->smtpConfig['security'];
         $this->mailer->Port = $this->smtpConfig['port'];
+
+        $this->mailer->SMTPOptions = array(
+            'ssl' => array(
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            )
+        );
     }
 }
