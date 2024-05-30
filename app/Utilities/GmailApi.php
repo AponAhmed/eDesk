@@ -76,7 +76,7 @@ class GmailApi
     public function create_client()
     {
         $client = new Client();
-        $client->setApplicationName("gApiContact");
+        $client->setApplicationName("eDesk");
         $client->setScopes(Gmail::MAIL_GOOGLE_COM);
         $client->setAuthConfig($this->credentials);
         $client->setAccessType("offline");
