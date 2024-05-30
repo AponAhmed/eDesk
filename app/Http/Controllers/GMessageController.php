@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\GMessage as Message;
 use App\Models\Reply;
+use App\Models\Sender;
 use App\Models\Settings;
 use App\Utilities\GmailApi;
 use App\Utilities\Helper;
@@ -24,12 +25,102 @@ class GMessageController extends Controller
     static $signature = "";
 
 
-
     public function __construct()
     {
         self::$signature = "<p>" . nl2br(Settings::get('gdesk_signature')) . "</p>";
         self::GetReminder();
         $this->middleware('auth');
+    }
+
+
+    //return View To create a new message
+    function newMessage()
+    {
+        $emails = [];
+        $emails[Settings::get('gadmin_email')] = Settings::get('gadmin_name');
+
+        return view('new-message', ['senders' => Sender::all(), 'emails' => $emails]);
+    }
+
+    function sendNew(Request $request)
+    {
+        $attachment = [];
+        // Check if the request has files
+        if ($request->hasFile('attachments')) {
+            $files = $request->file('attachments');
+
+            foreach ($files as $file) {
+                // Get the original file name
+                $originalName = $file->getClientOriginalName();
+
+                // Move the uploaded file to a temporary storage directory
+                $tempPath = $file->storeAs('temp', $originalName);
+
+                // Get the full path of the stored file
+                $fullPath = storage_path("app/{$tempPath}");
+
+                // Add the file information to the array
+                $attachment[] = [
+                    'path' => $fullPath,
+                    'name' => $originalName,
+                ];
+            }
+        }
+
+        try {
+            $to = $request->get('toaddress');
+            if (empty($to)) {
+                throw new Exception("Could not find recipient");
+            }
+            $subject = $request->get('subject');
+            $messageBody = $request->get('message');
+            $cc = $request->get('cc');
+
+            //Return path
+            $returnToStr = $request->get('return_to');
+            $return = explode(":", $returnToStr);
+            $AdminName = $return[0];
+            $AdminEmail = $return[1];
+
+            if ($request->has('return_to_custom') && !empty($request->get('return_to_custom'))) {
+                $customEmail = $request->input('return_to_custom');
+                // Check if the email is valid (optional, Laravel's email validation rule above already checks for this)
+                if (filter_var($customEmail, FILTER_VALIDATE_EMAIL)) {
+                    // Assign the email to AdminEmail
+                    // You can add your logic here to assign the email
+                    $AdminEmail = $customEmail;
+                } else {
+                    throw new Exception('Invalid email address provided');
+                }
+            }
+
+
+            $sender = Sender::find($request->get('sender'));
+            $mailer = $sender->getMailer();
+
+
+
+            if (!$mailer->checkConnection()) {
+                throw new Exception("Message not Sent: Could not connect to Email Server");
+            }
+            $options = [
+                'fromName' => $AdminName,
+                'fromEmail' => $sender->email_address,
+                'Return-Path' => $AdminEmail,
+                'toName' => "",
+                'CC' => $cc,
+            ];
+            $messageBody = nl2br($messageBody) . " " . self::$signature;
+            $sent = $mailer->sendEmail($to, $subject, $messageBody, $options, $attachment);
+            if ($sent) {
+                Session::flash('success', 'Message Succefully Sent.');
+            } else {
+                throw new Exception("Message not Sent !");
+            }
+            //Session::flash('success', 'Message Succefully Sent.');
+        } catch (\Throwable $th) {
+            throw new Exception("Message not Sent: " . $th->getMessage());
+        }
     }
 
     function info($id)
