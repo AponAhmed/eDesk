@@ -81,6 +81,7 @@ class GmailApi
         $client->setAuthConfig($this->credentials);
         $client->setAccessType("offline");
         $client->setPrompt("select_account consent");
+        $client->setRedirectUri("https://edesk.siatexmail.com/settings/general"); //Static URL Just For Test
 
         //$client->setRedirectUri("http://localhost/GmailApi"); // Must Match with credential's redirect URL
         // Load previously authorized token from a file, if it exists.
