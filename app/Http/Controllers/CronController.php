@@ -78,12 +78,26 @@ class CronController extends Controller
                 continue;
             }
             $messageObject = $message['object'];
+
+
+
             // Extract relevant data from the message object
             $name = $message['from']->getName() ?? 'Unknown Sender';
             $email = $message['from']->getAddress();
             $subject = $message['subject'] ?? 'No Subject';
             $body = $message['body'] ?? 'No Content';
             $header = json_encode($message['headers']);
+
+            if ($subject) {
+                if (stripos($subject, 'delivery status notification') !== false) {
+                    echo "Delivery Status Notification detected and ingonred to download<br>";
+                    continue;
+                }
+            }
+            if (strpos($email, 'mailer-daemon') !== false) {
+                echo "From Address mailer-daemon detected and ingonred to download<br>";
+                continue;
+            }
 
             // Create the GMessage record
             try {
