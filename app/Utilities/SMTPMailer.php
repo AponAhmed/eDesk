@@ -37,7 +37,8 @@ class SMTPMailer implements MailSender
             'toName' => "",
             'CC' => "",
             'BCC' => "",
-            "Return-Path" => ""
+            "Return-Path" => "",
+            'ReadRecept' => "",
         ];
 
         $options = array_merge($defaultOption, $options);
@@ -48,6 +49,11 @@ class SMTPMailer implements MailSender
         $this->mailer->From = $this->options['fromEmail'];
         $this->mailer->FromName = $this->options['fromName'];
 
+        if ($this->options['ReadRecept'] != "") {
+            $this->mailer->addCustomHeader('Disposition-Notification-To', $this->options['fromName'] . "<" . $this->options['ReadRecept'] . ">"); //" . $this->options['ReadRecept'] . "
+            //$this->mailer->addCustomHeader('Return-Receipt-To', $this->options['ReadRecept']);
+            //$this->mailer->ConfirmReadingTo = $this->options['ReadRecept'];
+        }
 
         $this->mailer->addAddress($to, $this->options['toName']);     //Add a recipient
 
