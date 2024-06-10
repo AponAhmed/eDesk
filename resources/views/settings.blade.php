@@ -35,6 +35,14 @@
                                     </div>
                                 </div>
                                 <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Read Receipt to Email</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <input class="w-full border rounded px-2 py-1" type="email"
+                                            name="settings[gread_receipt]" value="<?php echo $Settings::get('gread_receipt', ''); ?>">
+                                        <span class="text-gray-500 text-sm">Disposition-Notification-To" header to the email, requesting a read receipt.</span>
+                                    </div>
+                                </div>
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
                                     <label class="w-32">Signature</label> <!-- Adjust the width as needed -->
                                     <div class="flex-1 md:ml-4 ml-0">
                                         <textarea rows="10" name="settings[gdesk_signature]" class="w-full scrollbar-thin border border-gray-300 p-4"><?php echo $Settings::get('gdesk_signature', ''); ?></textarea>
