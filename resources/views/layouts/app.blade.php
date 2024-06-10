@@ -105,6 +105,7 @@
             </div>
         @endguest
     </div>
+    @yield('script')
 </body>
 
 </html>
