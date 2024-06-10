@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 message: `Sure delete all items in this box`,
                 yesCallback: () => {
                     axios
-                        .post("/delete-all", {
+                        .post("/" + SUBAPP + "/delete-all", {
                             box: deleteall.getAttribute("data-box"),
                         })
                         .then((response) => {
