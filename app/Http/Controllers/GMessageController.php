@@ -42,7 +42,89 @@ class GMessageController extends Controller
         return view('new-message', ['senders' => Sender::all(), 'emails' => $emails]);
     }
 
-    function sendNew(Request $request)
+    public function sendNew(Request $request)
+    {
+        try {
+            $attachment = [];
+            // Check if the request has files
+            if ($request->hasFile('attachments')) {
+                $files = $request->file('attachments');
+
+                foreach ($files as $file) {
+                    // Get the original file name
+                    $originalName = $file->getClientOriginalName();
+
+                    // Move the uploaded file to a temporary storage directory
+                    $tempPath = $file->storeAs('temp', $originalName);
+
+                    // Get the full path of the stored file
+                    $fullPath = storage_path("app/{$tempPath}");
+
+                    // Add the file information to the array
+                    $attachment[] = [
+                        'path' => $fullPath,
+                        'name' => $originalName,
+                    ];
+                }
+            }
+
+            $to = $request->get('toaddress');
+            if (empty($to)) {
+                throw new Exception("Could not find recipient");
+            }
+            $subject = $request->get('subject');
+            $messageBody = $request->get('message');
+            $cc = $request->get('cc');
+
+            //Return path
+            $returnToStr = $request->get('return_to');
+            $return = explode(":", $returnToStr);
+            $AdminName = $return[0];
+            $AdminEmail = $return[1];
+
+            if ($request->has('return_to_custom') && !empty($request->get('return_to_custom'))) {
+                $customEmail = $request->input('return_to_custom');
+                // Check if the email is valid (optional, Laravel's email validation rule above already checks for this)
+                if (filter_var($customEmail, FILTER_VALIDATE_EMAIL)) {
+                    // Assign the email to AdminEmail
+                    // You can add your logic here to assign the email
+                    $AdminEmail = $customEmail;
+                } else {
+                    throw new Exception('Invalid email address provided');
+                }
+            }
+
+            $sender = Sender::find($request->get('sender'));
+            $mailer = $sender->getMailer();
+
+            if (!$mailer->checkConnection()) {
+                throw new Exception("Message not Sent: Could not connect to Email Server");
+            }
+
+            $options = [
+                'fromName' => $AdminName,
+                'fromEmail' => $sender->email_address,
+                'Return-Path' => $AdminEmail,
+                'toName' => "",
+                'CC' => $cc,
+            ];
+
+            $messageBody = nl2br($messageBody) . " " . self::$signature;
+
+            $sent = $mailer->sendEmail($to, $subject, $messageBody, $options, $attachment);
+            //$sent = true; // Dummy value, replace with your actual send email logic
+            if ($sent) {
+                echo 1;
+                //Session::flash('success', 'Message Successfully Sent.');
+            } else {
+                echo 0;
+            }
+        } catch (\Throwable $th) {
+            echo 0;
+        }
+    }
+
+    function sendNew_(Request $request)
     {
         $attachment = [];
         // Check if the request has files
@@ -111,7 +193,8 @@ class GMessageController extends Controller
                 'CC' => $cc,
             ];
             $messageBody = nl2br($messageBody) . " " . self::$signature;
-            $sent = $mailer->sendEmail($to, $subject, $messageBody, $options, $attachment);
+            //$sent = $mailer->sendEmail($to, $subject, $messageBody, $options, $attachment);
+            $sent = true;
             if ($sent) {
                 Session::flash('success', 'Message Succefully Sent.');
             } else {
@@ -621,7 +704,7 @@ class GMessageController extends Controller
     public function index($box = 'inbox')
     {
         // Perform the query to filter messages based on labels to include and labels to not include
-        $messages = $this->getMessageByBox($box)->paginate(10);
+        $messages = $this->getMessageByBox($box)->paginate(15);
         $actions = $this->multipleActions($box);
         return view('ghome', compact('messages', 'actions', 'box'));
     }
