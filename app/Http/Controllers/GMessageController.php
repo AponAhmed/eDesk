@@ -76,6 +76,8 @@ class GMessageController extends Controller
             $messageBody = $request->get('message');
             $cc = $request->get('cc');
 
+            $autoCc = $request->get('auto_cc');
+            $readReceptEnable = $request->get('read_receipt');
             //Return path
             $returnToStr = $request->get('return_to');
             $return = explode(":", $returnToStr);
@@ -101,6 +103,10 @@ class GMessageController extends Controller
                 throw new Exception("Message not Sent: Could not connect to Email Server");
             }
 
+            if ($autoCc == '1') { //When Bulk Send then first one auto cc
+                $cc = $AdminEmail;
+            }
+
             $options = [
                 'fromName' => $AdminName,
                 'fromEmail' => $sender->email_address,
@@ -109,6 +115,13 @@ class GMessageController extends Controller
                 'CC' => $cc,
             ];
 
+            if ($readReceptEnable == '1') {
+                $readReceiptEmail = Settings::get('gread_receipt', "");
+                if ($readReceiptEmail != "") {
+                    $options['ReadRecept'] = $readReceiptEmail;
+                }
+            }
+            //'ReadRecept'=>$cc
             $messageBody = nl2br($messageBody) . " " . self::$signature;
 
             $sent = $mailer->sendEmail($to, $subject, $messageBody, $options, $attachment);
@@ -124,87 +137,6 @@ class GMessageController extends Controller
         }
     }
 
-    function sendNew_(Request $request)
-    {
-        $attachment = [];
-        // Check if the request has files
-        if ($request->hasFile('attachments')) {
-            $files = $request->file('attachments');
-
-            foreach ($files as $file) {
-                // Get the original file name
-                $originalName = $file->getClientOriginalName();
-
-                // Move the uploaded file to a temporary storage directory
-                $tempPath = $file->storeAs('temp', $originalName);
-
-                // Get the full path of the stored file
-                $fullPath = storage_path("app/{$tempPath}");
-
-                // Add the file information to the array
-                $attachment[] = [
-                    'path' => $fullPath,
-                    'name' => $originalName,
-                ];
-            }
-        }
-
-        try {
-            $to = $request->get('toaddress');
-            if (empty($to)) {
-                throw new Exception("Could not find recipient");
-            }
-            $subject = $request->get('subject');
-            $messageBody = $request->get('message');
-            $cc = $request->get('cc');
-
-            //Return path
-            $returnToStr = $request->get('return_to');
-            $return = explode(":", $returnToStr);
-            $AdminName = $return[0];
-            $AdminEmail = $return[1];
-
-            if ($request->has('return_to_custom') && !empty($request->get('return_to_custom'))) {
-                $customEmail = $request->input('return_to_custom');
-                // Check if the email is valid (optional, Laravel's email validation rule above already checks for this)
-                if (filter_var($customEmail, FILTER_VALIDATE_EMAIL)) {
-                    // Assign the email to AdminEmail
-                    // You can add your logic here to assign the email
-                    $AdminEmail = $customEmail;
-                } else {
-                    throw new Exception('Invalid email address provided');
-                }
-            }
-
-
-            $sender = Sender::find($request->get('sender'));
-            $mailer = $sender->getMailer();
-
-
-
-            if (!$mailer->checkConnection()) {
-                throw new Exception("Message not Sent: Could not connect to Email Server");
-            }
-            $options = [
-                'fromName' => $AdminName,
-                'fromEmail' => $sender->email_address,
-                'Return-Path' => $AdminEmail,
-                'toName' => "",
-                'CC' => $cc,
-            ];
-            $messageBody = nl2br($messageBody) . " " . self::$signature;
-            //$sent = $mailer->sendEmail($to, $subject, $messageBody, $options, $attachment);
-            $sent = true;
-            if ($sent) {
-                Session::flash('success', 'Message Succefully Sent.');
-            } else {
-                throw new Exception("Message not Sent !");
-            }
-            //Session::flash('success', 'Message Succefully Sent.');
-        } catch (\Throwable $th) {
-            throw new Exception("Message not Sent: " . $th->getMessage());
-        }
-    }
 
     function info($id)
     {
