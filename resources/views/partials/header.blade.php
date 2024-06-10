@@ -39,7 +39,7 @@
 
     @if (request()->segment(1) == 'gdesk')
         <a href="{{ route('gdesk.newmessage') }}"
-            class="popup  bg-[#f03a3a] px-2 rounded-md flex items-center ml-3 text-white h-7 text-sm" data-w="900">
+            class="bg-[#f03a3a] px-2 rounded-md flex items-center ml-3 text-white h-7 text-sm" data-w="900">
             <svg class="w-4 h-4 text-white stroke-white mr-1" viewBox="0 0 512 512">
                 <path d="M384 224v184a40 40 0 01-40 40H104a40 40 0 01-40-40V168a40 40 0 0140-40h167.48" fill="none"
                     stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" />
