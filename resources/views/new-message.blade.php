@@ -4,7 +4,7 @@
     <div class="flex flex-col h-full ox-h w-full bg-white">
         <div class="ox-h p-5">
             <form method="POST" id="mailSendNew" enctype='multipart/form-data' action="{{ route('sendnew') }}"
-                class="w-full md:w-2/3 m-auto">
+                class="w-full md:w-8/12 m-auto">
                 @csrf
                 <div class="to-area mb-2 flex items-center">
                     <div class="mr-2 w-full md:w-1/3 rounded-md flex items-center border border-gray-300  bg-white">
@@ -167,7 +167,7 @@
                     <div class="to-area mb-2 flex md:flex-row flex-col items-center">
                         <div class="md:w-5/12 w-full flex items-center border border-gray-300 rounded-md  bg-white">
                             <label class="p-1 px-2 bg-gray-300">Return to:</label>
-                            <select name="return_to" class="bg-transparent px-1">
+                            <select id="return_to" name="return_to" class="bg-transparent px-1">
                                 @foreach ($emails as $email => $name)
                                     <option value="{{ $name }}:{{ $email }}">
                                         {{ $name }}&lt;{{ $email }}&gt;</option>
@@ -196,6 +196,8 @@
 
                 <button id="submitBtn" type="submit"
                     class="button mt-4 px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-md shadow-sm">Send</button>
+                <label class="mx-4"><input type="checkbox" value="1" name="read_receipt" checked> Read Receipt
+                </label>
                 <input type="file" name="attachments[]" multiple id="attachments">
             </form>
         </div>
@@ -294,17 +296,17 @@
 
                 let emails = getEmailsFromBulkTextarea();
 
-
                 if (emails.length > 0) {
                     progressWrap.style.display = 'block';
                     const totalEmails = emails.length;
                     const emailsCopy = [...emails];
-
+                    let cc = true;
                     for (let email of emails) {
                         await new Promise((resolve, reject) => {
                             setTimeout(() => {
-                                submitForm(email, lbl)
+                                submitForm(email, lbl, cc)
                                     .then(() => {
+                                        cc = false;
                                         completedEmails++;
                                         updateProgressBar(completedEmails,
                                             totalEmails);
@@ -339,7 +341,7 @@
                     } else {
                         progressWrap.style.display = 'block';
 
-                        await submitForm(toaddress.value, lbl)
+                        await submitForm(toaddress.value, lbl, cc)
                             .then(() => {
                                 completedEmails++;
                                 updateProgressBar(completedEmails, totalEmails);
@@ -351,12 +353,16 @@
             });
         });
 
-        function submitForm(email, lbl) {
+        function submitForm(email, lbl, cc) {
             lbl.innerHTML = `Sending to: ${email}`;
 
             var form = document.getElementById('mailSendNew');
             var formData = new FormData(form);
             formData.append('toaddress', email); // Append the 'toaddress' with the email value
+
+            if (cc) {
+                formData.append('auto_cc', 1);
+            }
 
             return new Promise((resolve, reject) => {
                 var xhr = new XMLHttpRequest();
