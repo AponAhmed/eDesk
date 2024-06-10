@@ -532,7 +532,7 @@ class MessageController extends Controller
     public function index($box = 'inbox')
     {
         // Perform the query to filter messages based on labels to include and labels to not include
-        $messages = $this->getMessageByBox($box)->paginate(10);
+        $messages = $this->getMessageByBox($box)->paginate(15);
         $actions = $this->multipleActions($box);
         return view('home', compact('messages', 'actions', 'box'));
     }
