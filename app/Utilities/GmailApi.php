@@ -154,7 +154,7 @@ class GmailApi
      * @param string $message Mail Body
      * @param array $options Mail Sending options
      */
-    public function send($to, $subject = "", $message = "", $options = [],$attachments=[])
+    public function send($to, $subject = "", $message = "", $options = [], $attachments = [])
     {
         $this->to = $to;
         $this->subject = $subject;
@@ -166,19 +166,21 @@ class GmailApi
             'toName' => "",
             'CC' => "",
             'BCC' => "",
-            "Return-Path" => ""
+            "Return-Path" => "",
+            "ReadRecept" => "",
         ];
-
+      
         $options = array_merge($defaultOption, $options);
 
         $this->options = $options;
 
+       
         $service = new Gmail($this->client);
         //var_dump($service);
         // Print the labels in the user's account.
         //FormEmail
         $FormEmail = !empty($options['fromEmail']) ? $options['fromEmail'] : "me";
-        $message =  $this->createMessage($FormEmail, $to, $subject, $message, $options,$attachments);
+        $message =  $this->createMessage($FormEmail, $to, $subject, $message, $options, $attachments);
         //$draft = new Google_Service_Gmail_Draft();
         //$draft->setMessage($message);
         //$draft = $service->users_drafts->create('me', $draft);
@@ -277,6 +279,11 @@ class GmailApi
         if ($this->options['Return-Path']) {
             $mail->addReplyTo($this->options['Return-Path']);
         }
+
+        if ($this->options['ReadRecept'] != "") {
+            $mail->addCustomHeader('Disposition-Notification-To', $this->options['fromName'] . "<" . $this->options['ReadRecept'] . ">"); //" . $this->options['ReadRecept'] . "
+        }
+
         if (isset($this->options['CC']) && !empty($this->options['CC'])) {
             $mail->addCC($this->options['CC']);
         }
@@ -301,6 +308,7 @@ class GmailApi
         //Pre send to generate MIME
         $mail->preSend();
         $mime = $mail->getSentMIMEMessage();
+        //dd($mime);
         $mime = rtrim(strtr(base64_encode($mime), '+/', '-_'), '=');
         return $mime;
     }
