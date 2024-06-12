@@ -31,7 +31,8 @@
                                     <div class="flex-1 md:ml-4 ml-0">
                                         <input class="w-full border rounded px-2 py-1" type="email"
                                             name="settings[gadmin_email]" value="<?php echo $Settings::get('gadmin_email', 'admin@siatexltd.com'); ?>">
-                                        <span class="text-gray-500 text-sm">Reply to  Email Address to Receive reply mails</span>
+                                        <span class="text-gray-500 text-sm">Reply to Email Address to Receive reply
+                                            mails</span>
                                     </div>
                                 </div>
                                 <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
@@ -39,7 +40,8 @@
                                     <div class="flex-1 md:ml-4 ml-0">
                                         <input class="w-full border rounded px-2 py-1" type="email"
                                             name="settings[gread_receipt]" value="<?php echo $Settings::get('gread_receipt', ''); ?>">
-                                        <span class="text-gray-500 text-sm">Disposition-Notification-To" header to the email, requesting a read receipt.</span>
+                                        <span class="text-gray-500 text-sm">Disposition-Notification-To" header to the
+                                            email, requesting a read receipt.</span>
                                     </div>
                                 </div>
                                 <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
@@ -193,8 +195,8 @@
                                         <label class="w-32">Creativity</label> <!-- Adjust the width as needed -->
                                         <div class="flex-1 md:ml-4 ml-0">
                                             <div class="flex">
-                                                <input title="Temperature" name="settings[ai_temperature]" id="temparature"
-                                                    type="range" min="0" max="1"
+                                                <input title="Temperature" name="settings[ai_temperature]"
+                                                    id="temparature" type="range" min="0" max="1"
                                                     value="{{ \App\Models\Settings::get('ai_temperature', '0.7') }}"
                                                     step="0.1"
                                                     class="mt-2 range-input appearance-none w-10/12 bg-gray-400 rounded h-1 transition-all ease-in-out duration-300"
@@ -301,6 +303,15 @@
                                             name="settings[after_redirect_box_name]" value="<?php echo $Settings::get('after_redirect_box_name', 'eDesk-Redirect'); ?>">
                                         <span class="text-gray-500 text-sm">A mail Box - Redirected mails will Stored
                                             there</span>
+                                    </div>
+                                </div>
+                                <div class="optionField flex flex-col md:flex-row md:items-center justify-start mb-4">
+                                    <label class="w-32">Read Receipt to Email</label> <!-- Adjust the width as needed -->
+                                    <div class="flex-1 md:ml-4 ml-0">
+                                        <input class="w-full border rounded px-2 py-1" type="email"
+                                            name="settings[eread_receipt]" value="<?php echo $Settings::get('eread_receipt', ''); ?>">
+                                        <span class="text-gray-500 text-sm">Disposition-Notification-To" header to the
+                                            email, requesting a read receipt.</span>
                                     </div>
                                 </div>
                                 <hr class="my-4">
