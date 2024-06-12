@@ -25,7 +25,7 @@ class MessageController extends Controller
 
     public function __construct()
     {
-        self::$signature="<p>" . nl2br(Settings::get('edesk_signature')) . "</p>";
+        self::$signature = "<p>" . nl2br(Settings::get('edesk_signature')) . "</p>";
         self::GetReminder();
         $this->middleware('auth');
     }
@@ -313,6 +313,8 @@ class MessageController extends Controller
 
         $cc = $request->get('reply_cc');
         $attachment = [];
+        $readReceptEnable = $request->get('read_receipt');
+
         // Check if the request has files
         if ($request->hasFile('attachments')) {
             $files = $request->file('attachments');
@@ -381,6 +383,13 @@ class MessageController extends Controller
                     'CC' => $cc,
                 ];
 
+                if ($readReceptEnable == '1') {
+                    $readReceiptEmail = Settings::get('eread_receipt', "");
+                    if ($readReceiptEmail != "") {
+                        $options['ReadRecept'] = $readReceiptEmail;
+                    }
+                }
+
                 $replyMessage .= $previousBody;
                 //dd($options);
 
@@ -431,6 +440,7 @@ class MessageController extends Controller
                 }
                 $gmail->SentBoxCustomLabel = Settings::get('after_redirect_box_name', 'eDesk-Redirect'); //
                 $message = Message::find($request->get('message_id'));
+
                 //Receiver
                 $receiverStr = $request->get('redirect_to');
                 $receiver = explode(":", $receiverStr);
@@ -455,6 +465,7 @@ class MessageController extends Controller
                     'toName' => $AdminName,
                     'Return-Path' => $message->email,
                 ];
+
                 $gmail->send($AdminEmail, $message->subject, $message->message, $options);
 
                 $message->removeLabel('inbox')->addLabel('redirect');
