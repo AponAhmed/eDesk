@@ -295,12 +295,12 @@
                 // Bulk emails 
 
                 let emails = getEmailsFromBulkTextarea();
-
+                let cc = false;
                 if (emails.length > 0) {
                     progressWrap.style.display = 'block';
                     const totalEmails = emails.length;
                     const emailsCopy = [...emails];
-                    let cc = true;
+                    cc=true;
                     for (let email of emails) {
                         await new Promise((resolve, reject) => {
                             setTimeout(() => {
