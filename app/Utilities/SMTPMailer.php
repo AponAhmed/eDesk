@@ -80,7 +80,7 @@ class SMTPMailer implements MailSender
         $this->mailer->Body = $this->body;
         $this->mailer->AltBody = $this->htmlToPlainText($this->body);
         $this->mailer->WordWrap = 70; // Set the wrap length
-        if (!$this->mailer->send()) {
+        if (!$this->mailer->send()) {//
             return false;
         } else {
             $this->updateCount();
