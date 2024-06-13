@@ -97,6 +97,11 @@ class GMessageController extends Controller
             }
 
             $sender = Sender::find($request->get('sender'));
+            if (!$sender->hasQuota()) {
+                echo "Limit exceeded";
+                exit;
+            }
+
             $mailer = $sender->getMailer();
 
             if (!$mailer->checkConnection()) {
