@@ -64,64 +64,105 @@ class ImapHandler implements MailReceiver
         $order = $options['order'] ?? 'DESC';
         $moveToLabel = $options['moveToLabel'] ?? null;
 
-        // Connect to the IMAP server
-        $connection = $this->server->authenticate($this->sender->imap_options['account'], $this->sender->imap_options['password']);
 
-        // Select the specified mailbox
-        $mailbox = $connection->getMailbox($mailbox);
-
-        //Move Box
-        $movedBox = false;
-        if (!empty($moveToLabel)) {
-            $movedBox = trim($moveToLabel);
-            $movedBox = $connection->getMailbox($movedBox);
-        }
-
-
-
-        // Search for recent emails
-        $messages = $mailbox->getMessages(
-            $this->search(),
-            SORTDATE,
-            true
-        );
-
-        // Process each message
         $emails = [];
-        foreach ($messages as $message) {
-            //Deboer Message
-            $MessageData = [
-                'row' => $message->getRawMessage(),
-                'object' => $message,
-                'number' => $message->getNumber(),
-                'id' => $message->getId(),
-                'subject' => $message->getSubject(),
-                'from' => $message->getFrom(), // Message\EmailAddress getFrom()->getName(), getFrom()->getAddress()
-                'to' => $message->getTo(), // array of Message\EmailAddress
-                'date' => $message->getDate() ? $message->getDate() : "", // DateTimeImmutable
-                'headers' => $message->getHeaders(),
-                'body' => empty($message->getBodyHtml()) ? $message->getBodyText() : $message->getBodyHtml(),
-            ];
-            $emails[] = $MessageData;
+        
+        try {
+            // Connect to the IMAP server
+            $connection = $this->server->authenticate($this->sender->imap_options['account'], $this->sender->imap_options['password']);
+    
+            // Select the specified mailbox
+            $mailbox = $connection->getMailbox($mailbox);
+    
+            //Move Box
+            $movedBox = false;
+            if (!empty($moveToLabel)) {
+                $movedBox = trim($moveToLabel);
+                $movedBox = $connection->getMailbox($movedBox);
+            }
+    
+    
+    
+            // Search for recent emails
+            $messages = $mailbox->getMessages(
+                $this->search(),
+                SORTDATE,
+                true
+            );
+    
+       
+            foreach ($messages as $message) {
+                
+                try {
+                    $rawMessage = $message->getRawMessage();
+                    $bodyHtml = $message->getBodyHtml();
+                    $bodyText = $message->getBodyText();
+                
+                    $body = !empty($bodyHtml) ? $bodyHtml : $bodyText;
+                
+                    if (!empty($body)) {
+                        // Detect encoding
+                        $encoding = $this->detectEncoding($body);
+                        
+                        if ($encoding) {
+                            // Convert to UTF-8 using detected encoding
+                            $body = mb_convert_encoding($body, 'UTF-8', $encoding);
+                        } else {
+                            // Attempt common encodings if detection fails
+                            $encodings = ['ISO-8859-1', 'Windows-1252', 'UTF-8'];
+                            foreach ($encodings as $fallbackEncoding) {
+                                $convertedBody = @mb_convert_encoding($body, 'UTF-8', $fallbackEncoding);
+                                if ($convertedBody !== false) {
+                                    $body = $convertedBody;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Handle exception
+                   $body="Not Decoded Message Body,";
+                }
+                
+                $MessageData = [
+                    'row' => $rawMessage,
+                    'object' => $message,
+                    'number' => $message->getNumber(),
+                    'id' => $message->getId(),
+                    'subject' => $message->getSubject(),
+                    'from' => $message->getFrom(),
+                    'to' => $message->getTo(),
+                    'date' => $message->getDate() ? $message->getDate() : "",
+                    'headers' => $message->getHeaders(),
+                    'body' => $body,
+                ];
+                
+                    // Your further processing logic here
+                
+                $emails[] = $MessageData;
+                //dd($MessageData);
+                // Move emails to another label if requested
+                if ($movedBox !== false) {
+                    $message->move($movedBox);
+                }
+                // Mark the message as seen (optional)
+                if (isset($options['markSeen']) && $options['markSeen'] === true) {
+                    $message->markAsSeen();
+                }
+    
+                // If $count is specified and reached, break out of the loop
+                if ($count > 0 && count($emails) >= $count) {
+                    break;
+                }
+            }
+    
+            // Close the connection
+            $connection->expunge(); // Expunge deleted messages
+            $connection->close();
 
-            // Move emails to another label if requested
-            if ($movedBox !== false) {
-                $message->move($movedBox);
-            }
-            // Mark the message as seen (optional)
-            if (isset($options['markSeen']) && $options['markSeen'] === true) {
-                $message->markAsSeen();
-            }
-
-            // If $count is specified and reached, break out of the loop
-            if ($count > 0 && count($emails) >= $count) {
-                break;
-            }
+        } catch (\Ddeboer\Imap\Exception\AuthenticationFailedException $e) {
+            echo 'Authentication failed: ', $e->getMessage();
         }
-
-        // Close the connection
-        $connection->expunge(); // Expunge deleted messages
-        $connection->close();
 
         return $emails;
     }
@@ -140,4 +181,20 @@ class ImapHandler implements MailReceiver
             return false; // Connection failed
         }
     }
+    
+    /**
+     * Detects the encoding of a given string.
+     *
+     * @param string $content
+     * @return string|null
+     */
+    function detectEncoding($content) {
+        $encoding = mb_detect_encoding($content, mb_detect_order(), true);
+    
+        // Log the detected encoding for debugging purposes
+        error_log('Detected encoding: ' . ($encoding ?: 'none'));
+    
+        return $encoding;
+    }
+
 }
