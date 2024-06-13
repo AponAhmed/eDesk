@@ -11,7 +11,7 @@
                         <label class="p-1 px-2 bg-gray-300">From:</label>
                         <select name="sender" class="bg-transparent px-2 w-full">
                             @foreach ($senders as $sender)
-                                <option value="{{ $sender->id }}">{{ $sender->email_address }}</option>
+                                <option value="{{ $sender->id }}">{{ $sender->email_address }} ({{$sender->getQuota()}})</option>
                             @endforeach
                         </select>
                     </div>
@@ -207,6 +207,7 @@
 @section('script')
     <script>
         var bulkRec = false;
+        let bulkSendIntarrupt = false;
         var aiPorivider = document.getElementById("aiProvider");
         if (aiPorivider) {
             aiSettingsFieldManage(aiPorivider.value);
@@ -300,7 +301,7 @@
                     progressWrap.style.display = 'block';
                     const totalEmails = emails.length;
                     const emailsCopy = [...emails];
-                    cc=true;
+                    cc = true;
                     for (let email of emails) {
                         await new Promise((resolve, reject) => {
                             setTimeout(() => {
@@ -328,10 +329,20 @@
                                         resolve();
                                     })
                                     .catch(error => {
+                                        if (bulkSendIntarrupt) {
+                                            console.log('Limit Exists');
+                                            alert(
+                                                "Daily Limit Exists, it will be reset next day"
+                                            );
+                                        }
                                         reject(error);
                                     });
                             }, getRandomDelay()); // 
                         });
+
+                        if (bulkSendIntarrupt) {
+                            break
+                        }
                     }
                 } else {
                     const totalEmails = 1
@@ -372,6 +383,9 @@
                         //console.log('Response Success:', xhr.responseText);
                         if (xhr.responseText == "1") {
                             console.log('Sent To:', email);
+                        } else if (xhr.responseText == "Limit exceeded") {
+                            bulkSendIntarrupt = true;
+                            reject(xhr.statusText);
                         } else {
                             console.log('Error Sending To:', email);
                         }
