@@ -143,6 +143,18 @@ class Sender extends Model
         $this->save();
     }
 
+    public function hasQuota()
+    {
+        return $this->getQuota() > 0;
+    }
+    
+    public function getQuota()
+    {
+        return ($this->daily_limit - $this->daily_send_count);
+    }
+
+
+
     public function getMailer()
     {
         if ($this->auth_login_type == 1) {
