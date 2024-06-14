@@ -11,7 +11,8 @@
                         <label class="p-1 px-2 bg-gray-300">From:</label>
                         <select name="sender" class="bg-transparent px-2 w-full">
                             @foreach ($senders as $sender)
-                                <option value="{{ $sender->id }}">{{ $sender->email_address }} ({{$sender->getQuota()}})</option>
+                                <option value="{{ $sender->id }}">{{ $sender->email_address }} ({{ $sender->getQuota() }})
+                                </option>
                             @endforeach
                         </select>
                     </div>
@@ -194,11 +195,20 @@
                     <div id="progress" class="bg-cyan-300 h-full"></div>
                 </div>
 
-                <button id="submitBtn" type="submit"
-                    class="button mt-4 px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-md shadow-sm">Send</button>
-                <label class="mx-4"><input type="checkbox" value="1" name="read_receipt" checked> Read Receipt
-                </label>
-                <input type="file" name="attachments[]" multiple id="attachments">
+                <div class="flex items-center mt-4">
+                    <button id="submitBtn" type="submit"
+                        class="button  px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-md shadow-sm">Send</button>
+                    <div class="flex flex-row border border-cyan-600 rounded-md mx-2">
+                        <input id="testAddres" type="email" class="m-[2px] px-2 py-0 outline-none border-0"
+                            id="test_to">
+                        <button type="button" class="bg-cyan-600 px-2  text-white" onclick="testSend(this)">Test
+                            Send</button>
+                    </div>
+                    <label class="mx-4"><input type="checkbox" value="1" name="read_receipt" checked> Read
+                        Receipt
+                    </label>
+                    <input type="file" name="attachments[]" multiple id="attachments">
+                </div>
             </form>
         </div>
     </div>
@@ -215,7 +225,6 @@
                 aiSettingsFieldManage(aiPorivider.value);
             });
         }
-
 
         function getEmailsFromBulkTextarea() {
             var bulkTextarea = document.getElementById("toaddressBulk");
@@ -363,6 +372,21 @@
                 }
             });
         });
+
+        function testSend(_this) {
+            let testaddress = document.getElementById("testAddres").value;
+            if (testaddress == '') {
+                alert('Please enter test receipent address');
+            } else {
+                _this.innerHTML = "Sending...";
+                let lbl = document.getElementById('lbl');
+                submitForm(testaddress, lbl, false).then(res => {
+                    console.log(res);
+                    _this.innerHTML = "Sent successfully";
+                });
+            }
+
+        }
 
         function submitForm(email, lbl, cc) {
             lbl.innerHTML = `Sending to: ${email}`;
