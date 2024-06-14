@@ -39,7 +39,7 @@
                     <div class="flex align-middle justify-items-center">
                         <a id="appLogo"
                             class="text-4xl font-light text-slate-300 m-auto w-5 overflow-hidden py-5  first-letter:text-cyan-400"
-                            href="{{ url('/') }}">
+                            href="{{ request()->segment(1) == 'gdesk' ? url('/gdesk/messages') : url('/') }}">
                             @php
                                 $currentParent = request()->segment(1) ?? 'edesk';
                                 if ($currentParent == 'gdesk') {
