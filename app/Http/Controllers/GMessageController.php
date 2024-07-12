@@ -724,4 +724,35 @@ class GMessageController extends Controller
     {
         return view('prompt');
     }
+
+    public function getNew()
+    {
+        $lastID = Settings::get('gLastChecked');
+
+        // Check if lastID is null
+        if (!$lastID) {
+            // Get the last message ID from the Messages model
+            $lastMessage = Message::latest()->first();
+
+            if ($lastMessage) {
+                // Set the eLastChecked setting to the last message ID
+                Settings::set('gLastChecked', $lastMessage->id);
+            }
+        } else {
+            // Find all new messages that arrived after the lastID
+            $newMessages = Message::where('id', '>', $lastID)
+                ->get(['id', 'name', 'subject']);
+
+            // Update eLastChecked to the latest message ID if there are new messages
+            if ($newMessages->isNotEmpty()) {
+                $latestMessageID = $newMessages->last()->id;
+                Settings::set('gLastChecked', $latestMessageID);
+            }
+
+            // Return the new messages as an array
+            return $newMessages->toArray();
+        }
+
+        return [];
+    }
 }
