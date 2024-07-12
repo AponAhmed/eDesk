@@ -7,7 +7,9 @@ use App\Models\Reply;
 use App\Models\Settings;
 use App\Utilities\GmailApi;
 use App\Utilities\Helper;
+use DateTime;
 use DOMDocument;
+use DOMXPath;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -308,6 +310,36 @@ class MessageController extends Controller
         $message->save();
     }
 
+    function getExMessage($message)
+    {
+        $bodyOnly = $message->message;
+        $dom = new DOMDocument();
+        libxml_use_internal_errors(true);
+        $dom->loadHTML($bodyOnly);
+        libxml_clear_errors();
+
+        // Find and remove the div with class 'message-info'
+        $xpath = new DOMXPath($dom);
+        $elements = $xpath->query("//div[contains(@class, 'message-info')]");
+
+        foreach ($elements as $element) {
+            $element->parentNode->removeChild($element);
+        }
+
+        // Save the modified HTML back to a string
+        $bodyOnly = $dom->saveHTML();
+
+        // Format the date, name, and email
+        $date = new DateTime($message->created_at);
+        $formattedDate = $date->format('M j, Y \a\t g:i A');
+        $name = htmlspecialchars($message->name, ENT_QUOTES, 'UTF-8');
+        $email = htmlspecialchars($message->email, ENT_QUOTES, 'UTF-8');
+        $header = "<div dir=\"ltr\" class=\"gmail_attr\">On $formattedDate $name &lt;$email&gt; wrote:";
+
+        return '<br><br><div class="gmail_quote">' . $header . '<br><br><blockquote class="gmail_quote" style="margin: 0px 0px 0px 0.8ex; border-left: 1px solid rgb(204, 204, 204); padding-left: 1ex;">' . $bodyOnly . '</blockquote></div>';
+    }
+
+
     function reply_send(Request $request)
     {
 
@@ -340,11 +372,11 @@ class MessageController extends Controller
         if ($request->has('message_id') && $request->get('message') && !empty($request->get('message'))) {
             $message = Message::find($request->get('message_id'));
             $toRmail = $message->email;
-            $previousBody = ' <br><br><blockquote style="margin: 0 0 0 20px; border-left: 2px solid #ccc; padding-left: 10px;">' . $message->message . '</blockquote>';
+
+            $previousBody = $this->getExMessage($message);
+
             $replyMessage = "<p>" . nl2br($request->get('message')) . "</p>";
             $replyMessage .= self::$signature;
-
-
 
             try {
                 //code...
@@ -627,5 +659,36 @@ class MessageController extends Controller
     public function prompt()
     {
         return view('prompt');
+    }
+
+    public function getNew()
+    {
+        $lastID = Settings::get('eLastChecked');
+
+        // Check if lastID is null
+        if (!$lastID) {
+            // Get the last message ID from the Messages model
+            $lastMessage = Message::latest()->first();
+
+            if ($lastMessage) {
+                // Set the eLastChecked setting to the last message ID
+                Settings::set('eLastChecked', $lastMessage->id);
+            }
+        } else {
+            // Find all new messages that arrived after the lastID
+            $newMessages = Message::where('id', '>', $lastID)
+                ->get(['id', 'name', 'subject']);
+
+            // Update eLastChecked to the latest message ID if there are new messages
+            if ($newMessages->isNotEmpty()) {
+                $latestMessageID = $newMessages->last()->id;
+                Settings::set('eLastChecked', $latestMessageID);
+            }
+
+            // Return the new messages as an array
+            return $newMessages->toArray();
+        }
+
+        return [];
     }
 }
