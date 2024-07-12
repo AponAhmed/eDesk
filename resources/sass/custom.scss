@@ -66,6 +66,9 @@ svg {
     background: rgba(0, 255, 0, 0.05);
 }
 
+// #sidebar {
+//     transition: all .1s;
+// }
 
 #sidebar.open {
     @apply w-48;
