@@ -42,8 +42,71 @@ let sidebar = document.querySelector("#sidebar");
 // Check local storage for the sidebar status and set it if available
 const sidebarStatus = localStorage.getItem("sidebarStatus");
 if (sidebarStatus === "open") {
-    sidebar.classList.add("open");
+    if (window.innerWidth > 768) {
+        sidebar.classList.add("open");
+    }
 }
+
+function handleSwipe() {
+    let touchstartX = 0;
+    let touchendX = 0;
+    let isSwiping = false;
+    let startZone = 0; // 0: none, 1: open zone, 2: close zone
+
+    function checkDirection() {
+        console.log(`touchstartX: ${touchstartX}, touchendX: ${touchendX}`);
+        if (startZone === 1 && touchendX - touchstartX > 50) {
+            // Swipe right to open
+            //console.log('Swiping right to open');
+            sidebar.classList.add("open");
+            localStorage.setItem("sidebarStatus", "open");
+        } else if (startZone === 2 && touchstartX - touchendX > 50) {
+            // Swipe left to close
+            //console.log('Swiping left to close');
+            sidebar.classList.remove("open");
+            localStorage.setItem("sidebarStatus", "closed");
+        }
+    }
+
+    document.addEventListener("touchstart", (e) => {
+        const touch = e.touches[0];
+        touchstartX = touch.clientX;
+        //console.log(`Touch start at: ${touchstartX}`);
+        if (touchstartX <= 50) {
+            isSwiping = true;
+            startZone = 1; // open zone
+            //console.log('Entering open zone');
+        } else if (touchstartX <= 170) {
+            isSwiping = true;
+            startZone = 2; // close zone
+            //console.log('Entering close zone');
+        }
+    });
+
+    document.addEventListener("touchmove", (e) => {
+        if (isSwiping) {
+            const touch = e.touches[0];
+            touchendX = touch.clientX;
+            //console.log(`Touch move at: ${touchendX}`);
+        }
+    });
+
+    document.addEventListener("touchend", (e) => {
+        if (isSwiping) {
+            //console.log(`Touch end at: ${touchendX}`);
+            checkDirection();
+            isSwiping = false;
+            startZone = 0;
+            console.log('Swipe ended');
+        }
+    });
+}
+
+// Call the function to enable swipe detection
+if (window.innerWidth < 768) {
+    handleSwipe();
+}
+
 menuTaggler.addEventListener("click", (e) => {
     // Toggle the 'open' class on the sidebar
     sidebar.classList.toggle("open");
@@ -54,9 +117,10 @@ menuTaggler.addEventListener("click", (e) => {
         localStorage.setItem("sidebarStatus", "closed");
     }
 });
+
 //Initialize the popup window
 new popup();
-new MessageView();
+const messageViewer = new MessageView();
 
 //Tab
 let tabContainers = document.querySelectorAll(".tab-wrap");
@@ -227,11 +291,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
+window.messageView = (messageId, module) => {
+    messageViewer.exViewDetails(messageId, module);
+    return messageId;
+}
+
 function updateCountBadge() {
     axios
         .get("/get-count")
         .then((axiosResponse) => {
             let data = axiosResponse.data;
+
             // Sum counts of all box types for 'edesk'
             let edeskCount = Object.values(data.edesk).reduce((acc, val) => acc + val, 0);
             // Sum counts of all box types for 'gdesk'
@@ -257,11 +327,29 @@ function updateCountBadge() {
                     }
                 }
             }
+
+            // Check if AndroidInterface is present
+            if (typeof AndroidInterface !== 'undefined') {
+                // Post notifications for new 'edesk' messages
+                if (data.new && data.new.edesk) {
+                    data.new.edesk.forEach((message) => {
+                        AndroidInterface.postNotification(message.name, message.id, message.subject, 'edesk');
+                    });
+                }
+
+                // Post notifications for new 'gdesk' messages
+                if (data.new && data.new.gdesk) {
+                    data.new.gdesk.forEach((message) => {
+                        AndroidInterface.postNotification(message.name, message.id, message.subject, 'gdesk');
+                    });
+                }
+            }
         })
         .catch((error) => {
             console.error(error);
         });
 }
+
 
 function updateBadge(itemId, count, id = false) {
     if (id) {
