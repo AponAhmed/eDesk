@@ -22,7 +22,7 @@ body {
     justify-content: center;
     flex-direction: column;
     box-sizing: border-box;
-    margin-top: 25px;
+    margin-top: 60px;
 }
 
 .card-header {
@@ -45,6 +45,7 @@ body {
     padding: 25px 50px;
     flex-grow: 1;
     width: 280px;
+    padding-top: 0px;
 }
 
 .form-group.remember_wrap .form-label {
@@ -146,10 +147,11 @@ $breakpoint-tablet: 768px;
 @media only screen and (max-width: $breakpoint-tablet) {
     .login-card {
         flex-direction: column;
+        border: 0;
     }
 
     .login-card-left {
         width: 100%;
-        min-height: 250px;
+        min-height: 120px;
     }
 }
