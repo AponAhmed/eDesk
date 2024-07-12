@@ -38,16 +38,23 @@ Route::get('/test', function () {
 Route::post('/ai', [AiGenerate::class, 'generate'])->name('ai'); //AI
 
 //Message Actions
-Route::get('/get-count', function () {
+Route::middleware('auth')->get('/get-count', function () {
     $messageController = new MessageController();
     $messageCount = $messageController->getCountAll();
 
     $gMessageController = new GMessageController();
     $gMessageCount = $gMessageController->getCountAll();
 
+    $eNew = $messageController->getNew();
+    $gNew = $gMessageController->getNew();
+
     return response()->json([
         'edesk' => $messageCount,
-        'gdesk' => $gMessageCount
+        'gdesk' => $gMessageCount,
+        'new' => [
+            'edesk' => $eNew,
+            'gdesk' => $gNew,
+        ]
     ]);
 });
 
