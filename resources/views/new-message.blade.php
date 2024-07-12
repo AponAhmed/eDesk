@@ -56,13 +56,13 @@
                             </svg>
                         </button>
                     </div>
-                    <div id="aiSettings" class="hidden">
-                        <div class="flex gap-2 mb-2">
-                            <div class="w-7/12">
+                    <div id="aiSettings" class="hidden md:p-0 md:bg-transparent md:mb-0 p-2 bg-gray-100 rounded-md mb-3 ">
+                        <div class="flex flex-col md:flex-row gap-2 mb-2">
+                            <div class="w-full md:w-7/12">
                                 <label class="text-sm text-gray-500">Prompt</label>
                                 <textarea rows="5" class="text-sm w-full p-2 rounded-md border border-solid border-gray-200" id="query"></textarea>
                             </div>
-                            <div class="w-5/12">
+                            <div class="w-full md:w-5/12">
                                 <label class="text-sm text-gray-500">Hint</label>
                                 <textarea rows="3" class="text-sm w-full p-2 rounded-md border border-solid border-gray-200" id="hint"></textarea>
                                 <div class="gemini-settings flex flex-col">
@@ -195,16 +195,16 @@
                     <div id="progress" class="bg-cyan-300 h-full"></div>
                 </div>
 
-                <div class="flex items-center mt-4">
+                <div class="flex flex-col-reverse md:flex-row md:items-center mt-4">
                     <button id="submitBtn" type="submit"
                         class="button  px-4 py-2 font-semibold text-sm bg-cyan-500 text-white rounded-md shadow-sm">Send</button>
-                    <div class="flex flex-row border border-cyan-600 rounded-md mx-2">
-                        <input id="testAddres" type="email" class="m-[2px] px-2 py-0 outline-none border-0"
+                    <div class="flex flex-row border border-cyan-600 rounded-md my-2 md:my-0 md:mx-2">
+                        <input id="testAddres" type="email" class="m-[2px] w-full md:w-auto px-2 py-0 outline-none border-0"
                             id="test_to">
-                        <button type="button" class="bg-cyan-600 px-2  text-white" onclick="testSend(this)">Test
+                        <button type="button" class="bg-cyan-600 px-2  text-white w-28 md:w-auto" onclick="testSend(this)">Test
                             Send</button>
                     </div>
-                    <label class="mx-4"><input type="checkbox" value="1" name="read_receipt" checked> Read
+                    <label class="md:mx-4 md:my-0 my-2"><input type="checkbox" value="1" name="read_receipt" checked> Read
                         Receipt
                     </label>
                     <input type="file" name="attachments[]" multiple id="attachments">
