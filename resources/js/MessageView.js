@@ -122,8 +122,18 @@ export default class MessageView {
                     item.classList.remove('unread');
                 }
             });
-
     }
+
+    exViewDetails(id, module) {
+        this.main.classList.add('details-open');
+        axios.post("/" + module + '/message', { id: id })
+            .then(response => {
+                this.data = response.data;
+            }).then(() => {
+                this.randerView();
+            });
+    }
+
     scalitanRelease() {
         this.details.innerHTML = `<div class="flex flex-col w-full">
         <div class="p-2  animate-pulse w-full border-b border-solid border-slate-100">
