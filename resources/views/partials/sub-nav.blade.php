@@ -4,8 +4,8 @@
 @endphp
 
 
-<div class="flex flex-col md:justify-around bg-slate-950 ">
-    <a  id="edeskmenu" href="{{ route('home') }}"
+<div class="hidden md:flex flex-col md:justify-around bg-slate-950 ">
+    <a id="edeskmenu" href="{{ route('home') }}"
         class="edeskmenu {{ $currentParent == 'edesk' ? 'bg-slate-900' : '' }} relative font-normal text-sm text-slate-400 leading-none flex p-2 items-center justify-center">
         <div class="flex flex-none items-center justify-center menu-icon">
             <svg class="w-4 h-4 p-[2px]" width="32" height="32" viewBox="0 0 32 32" fill="none"
