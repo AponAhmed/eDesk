@@ -77,11 +77,12 @@
                         </div>
                     </div>
                 </div>
-                <div id="bodyWrap" class="w-full flex flex-col ox-h">
-                    <div id="header" class="p-1 flex justify-between border-b border-solid border-gray-100">
+                <div id="bodyWrap" class="w-full flex flex-col ox-h ">
+                    <div id="header"
+                        class="dark:bg-gray-800 p-1 flex justify-between border-b border-solid border-gray-100 dark:border-gray-900">
                         @include('partials.header')
                     </div>
-                    <main id="main" class="p-2 h-full ox-h flex  relative bg-gray-100">
+                    <main id="main" class="p-2 h-full ox-h flex  relative bg-gray-100 dark:bg-gray-800">
                         {{-- details-open --}}
                         @if (Session::has('success'))
                             <div id="success-message"
