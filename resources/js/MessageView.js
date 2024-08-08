@@ -1,4 +1,5 @@
 const activeClass = 'bg-gray-200';
+const activeClassDark = 'dark:bg-gray-700';
 import axios from "axios";
 import popup from './popup';
 import { Dombuilder as el } from "@aponahmed/dombuilder";
@@ -33,6 +34,9 @@ export default class MessageView {
             if (item.classList.contains(activeClass)) {
                 item.classList.remove(activeClass);
             }
+            if (item.classList.contains(activeClassDark)) {
+                item.classList.remove(activeClassDark);
+            }
         });
     }
 
@@ -43,34 +47,35 @@ export default class MessageView {
 
     scalitan() {
         this.details.innerHTML = `<div class="flex flex-col w-full">
-        <div class="p-2  animate-pulse w-full border-b border-solid border-slate-100">
-            <div class="mb-[10px] flex">
-                <div class="h-6 bg-gray-200 w-7 mr-2  rounded"></div>
-                <div class="h-6 bg-gray-200 rounded w-3/5"></div>
+    <div class="p-2 animate-pulse w-full border-b border-solid border-slate-100 dark:border-slate-800">
+        <div class="mb-[10px] flex">
+            <div class="h-6 bg-gray-200 dark:bg-gray-700 w-7 mr-2 rounded"></div>
+            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/5"></div>
+        </div>
+        <div class="flex md:justify-between flex-col md:flex-row">
+            <div class="flex-col hidden md:flex md:flex-row w-full md:w-1/2">
+                <div class="h-3 bg-gray-100 dark:bg-gray-800 rounded w-3/5 md:mb-0 mb-1 mr-1"></div>
+                <div class="h-3 bg-gray-100 dark:bg-gray-800 rounded w-2/5 md:mb-0 mb-1"></div>
             </div>
-            <div class="flex md:justify-between flex-col md:flex-row">
-                <div class="flex-col hidden md:flex md:flex-row w-full md:w-1/2">
-                    <div class="h-3 bg-gray-100 rounded w-3/5 md:mb-0 mb-1 mr-1"></div>
-                    <div class="h-3 bg-gray-100 rounded w-2/5 md:mb-0 mb-1"></div>
-                </div>
 
-                <div class="flex mr-1 justify-end ">
-                    <div class="h-6 md:h-3 bg-gray-100 rounded w-20"></div>
-                    <div class="h-6 md:h-3 bg-gray-100 rounded w-20 ml-1"></div>
-                    <div class="h-6 md:h-3 bg-gray-100 rounded w-20 ml-1"></div>
-                    <div class="h-6 md:h-3  bg-gray-100 rounded w-8 ml-1"></div>
-                    <div class="h-6 md:h-3  bg-gray-100 rounded w-8 ml-1"></div>
-                    <div class="h-6 md:h-3  bg-gray-100 rounded w-5 ml-1"></div>
-                </div>
+            <div class="flex mr-1 justify-end">
+                <div class="h-6 md:h-3 bg-gray-100 dark:bg-gray-800 rounded w-20"></div>
+                <div class="h-6 md:h-3 bg-gray-100 dark:bg-gray-800 rounded w-20 ml-1"></div>
+                <div class="h-6 md:h-3 bg-gray-100 dark:bg-gray-800 rounded w-20 ml-1"></div>
+                <div class="h-6 md:h-3 bg-gray-100 dark:bg-gray-800 rounded w-8 ml-1"></div>
+                <div class="h-6 md:h-3 bg-gray-100 dark:bg-gray-800 rounded w-8 ml-1"></div>
+                <div class="h-6 md:h-3 bg-gray-100 dark:bg-gray-800 rounded w-5 ml-1"></div>
             </div>
         </div>
-        <div class=" p-4  animate-pulse w-full mt-4">
-            <div class="h-4 bg-gray-100 rounded w-4/5 mb-2"></div>
-            <div class="h-4 bg-gray-100 rounded w-5/5 mb-2"></div>
-            <div class="h-4 bg-gray-100 rounded w-3/5 mb-2"></div>
-            <div class="h-4 bg-gray-100 rounded w-4/6 mb-2"></div>
-        </div>
-    </div>`;
+    </div>
+    <div class="p-4 animate-pulse w-full mt-4">
+        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-4/5 mb-2"></div>
+        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-5/5 mb-2"></div>
+        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-3/5 mb-2"></div>
+        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-4/6 mb-2"></div>
+    </div>
+</div>
+`;
     }
 
     ExReplyTrigger(item) {
@@ -112,6 +117,7 @@ export default class MessageView {
 
         this.removeCurrent();
         item.classList.add(activeClass);
+        item.classList.add(activeClassDark);
         this.main.classList.add('details-open');
         //return;
         let id = item.getAttribute('data-id');
@@ -136,25 +142,25 @@ export default class MessageView {
 
     scalitanRelease() {
         this.details.innerHTML = `<div class="flex flex-col w-full">
-        <div class="p-2  animate-pulse w-full border-b border-solid border-slate-100">
+    <div class="p-2 animate-pulse w-full border-b border-solid border-slate-100 dark:border-slate-800">
         <div class="mb-[10px] flex">
-            <div class="h-6 bg-gray-200 w-7 mr-2  rounded"></div>
-            <div class="h-6 bg-gray-200 rounded w-3/5"></div>
+            <div class="h-6 bg-gray-200 dark:bg-gray-700 w-7 mr-2 rounded"></div>
+            <div class="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/5"></div>
         </div>
         <div class="flex md:justify-between flex-col md:flex-row">
             <div class="flex-col hidden md:flex md:flex-row w-full md:w-1/2">
-                <div class="h-3 bg-gray-100 rounded w-3/5 md:mb-0 mb-1 mr-1"></div>
-                <div class="h-3 bg-gray-100 rounded w-2/5 md:mb-0 mb-1"></div>
+                <div class="h-3 bg-gray-100 dark:bg-gray-800 rounded w-3/5 md:mb-0 mb-1 mr-1"></div>
+                <div class="h-3 bg-gray-100 dark:bg-gray-800 rounded w-2/5 md:mb-0 mb-1"></div>
             </div>
         </div>
     </div>
-        <div class=" p-4  animate-pulse w-full mt-4">
-            <div class="h-4 bg-gray-100 rounded w-4/5 mb-2"></div>
-            <div class="h-4 bg-gray-100 rounded w-5/5 mb-2"></div>
-            <div class="h-4 bg-gray-100 rounded w-3/5 mb-2"></div>
-            <div class="h-4 bg-gray-100 rounded w-4/6 mb-2"></div>
-        </div>
-    </div>`;
+    <div class="p-4 animate-pulse w-full mt-4">
+        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-4/5 mb-2"></div>
+        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-5/5 mb-2"></div>
+        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-3/5 mb-2"></div>
+        <div class="h-4 bg-gray-100 dark:bg-gray-800 rounded w-4/6 mb-2"></div>
+    </div>
+</div>`;
     }
 
     actions() {
