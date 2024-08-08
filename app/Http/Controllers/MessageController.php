@@ -36,33 +36,33 @@ class MessageController extends Controller
     {
         $message = Message::find($id);
         echo '<div class="max-w-md mx-autoshadow-md p-6 rounded-md">
-        <h2 class="text-xl font-semibold mb-4">Customer Information</h2>
+        <h2 class="text-xl font-semibold mb-4 dark:text-gray-300">Customer Information</h2>
         <div class="mb-2 flex items-center">
-            <label class="block text-gray-700 text-sm font-bold w-20" for="name">Name:</label>
-            <span class="text-gray-800 text-lg" id="name">' . $message->name . '</span>
+            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold w-20" for="name">Name:</label>
+            <span class="text-gray-800 text-lg dark:text-gray-200" id="name">' . $message->name . '</span>
         </div>
         <div class="mb-2 flex items-center">
-            <label class="block text-gray-700 text-sm font-bold w-20" for="email">Email:</label>
-            <span class="text-gray-800 text-lg" id="email">' . $message->email . '</span>
+            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold w-20" for="email">Email:</label>
+            <span class="text-gray-800 text-lg dark:text-gray-200" id="email">' . $message->email . '</span>
         </div>
         <div class="mb-1 flex items-center">
-            <label class="block text-gray-700 text-sm font-bold w-20" for="ip">Time:</label>
-            <span class="text-gray-800 text-lg" id="ip">' . $message->created_at . '</span>
+            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold w-20" for="ip">Time:</label>
+            <span class="text-gray-800 text-lg dark:text-gray-200" id="ip">' . $message->created_at . '</span>
         </div>
         <div class="mb-1 flex items-center">
-            <label class="block text-gray-700 text-sm font-bold w-20" for="ip">IP:</label>
-            <span class="text-gray-800 text-lg" id="ip">' . $message->ip . '</span>
+            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold w-20" for="ip">IP:</label>
+            <span class="text-gray-800 dark:text-gray-200 text-lg" id="ip">' . $message->ip . '</span>
         </div>
 
         <div class="mb-1 flex items-center">
-            <label class="block text-gray-700 text-sm font-bold w-20" for="country">Country:</label>
-            <span class="text-gray-800 text-lg" id="country">' . $message->country() . '</span>
+            <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold w-20" for="country">Country:</label>
+            <span class="text-gray-800 dark:text-gray-200 text-lg" id="country">' . $message->country() . '</span>
         </div>
         </div>
-        <button class="mt-4 text-blue-500 hover:underline" onclick="more(this)">More</button>
+        <button class="mt-4 text-blue-500 dark:text-gray-300 hover:underline" onclick="more(this)">More</button>
             <div class="colapse-able hidden">
-                <label class="block text-gray-700 text-sm font-bold mt-4" for="json">JSON Data:</label>
-                <pre class="text-sm text-gray-800">' . json_encode($message->senderData(), JSON_PRETTY_PRINT) . '</pre>
+                <label class="block text-gray-700 dark:text-gray-300 text-sm font-bold mt-4" for="json">JSON Data:</label>
+                <pre class="text-sm text-gray-800 dark:text-gray-200">' . json_encode($message->senderData(), JSON_PRETTY_PRINT) . '</pre>
             </div>
         </div>';
     }
