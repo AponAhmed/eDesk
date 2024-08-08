@@ -609,3 +609,46 @@ function aiSettingsFieldManage(prov) {
             break;
     }
 }
+
+
+
+
+const toggleClassName = "theme-toggle--toggled";
+const toggleButton = document.querySelector("button.theme-toggle");
+
+// Function to apply the theme based on a boolean value or the saved preference
+window.themeToggle = function (dark) {
+    let doc = document.documentElement;
+    if (dark === undefined) {
+        doc.classList.toggle('dark');
+    } else {
+        if (dark) {
+            doc.classList.add("dark");
+            toggleButton.classList.remove(toggleClassName);
+        } else {
+            toggleButton.classList.add(toggleClassName);
+            if (doc.classList.contains("dark"))
+                doc.classList.remove("dark");
+        }
+    }
+    // Save the current theme mode to localStorage
+    localStorage.setItem('theme', doc.classList.contains('dark') ? 'dark' : 'light');
+}
+
+// Event listener to toggle the theme and update localStorage
+toggleButton.addEventListener("click", (e) => {
+    e.currentTarget.classList.toggle(toggleClassName);
+    window.themeToggle(); // Toggle the theme
+});
+
+// Apply the saved theme on page load
+document.addEventListener("DOMContentLoaded", () => {
+    if (typeof AndroidInterface === 'undefined') {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            window.themeToggle(true);
+        } else {
+            window.themeToggle(false);
+        }
+    }
+});
