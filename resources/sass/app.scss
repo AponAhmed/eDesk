@@ -17,9 +17,16 @@
 @tailwind components;
 @tailwind utilities;
 
+@import 'dark-toggler.scss';
 @import 'checkbox.scss';
 @import 'confirm.scss';
 @import 'tab.scss';
 @import 'popup.scss';
 @import 'custom.scss';
 @import 'responsive.scss';
+
+//Dark theme
+
+// html.dark body{
+//     background-color: #000;
+// }
