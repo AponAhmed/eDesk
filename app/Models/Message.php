@@ -10,7 +10,15 @@ class Message extends Model
 {
     use HasFactory, MessageTraits;
     protected $fillable = [
-        'name', 'ip', 'email', 'whatsapp', 'subject', 'reminder', 'message', 'domain_id', 'labels'
+        'name',
+        'ip',
+        'email',
+        'whatsapp',
+        'subject',
+        'reminder',
+        'message',
+        'domain_id',
+        'labels'
     ];
     // Cast the 'labels' field to an array
     protected $casts = [
@@ -41,7 +49,7 @@ class Message extends Model
     {
         return $this->belongsTo(Domain::class);
     }
-    
+
     /**
      * Create a new message.
      *
@@ -94,12 +102,33 @@ class Message extends Model
     }
 
 
-    function senderData()
+    function senderData_()
     {
+        $ips = explode(',', $this->ip);
+        //last ip address
+        $this->ip = trim(end($ips));
         $url = "http://ip-api.com/json/$this->ip";
         $content = file_get_contents($url);
         $ob = json_decode($content);
         return $ob;
+    }
+
+    /**
+     * Multiple IP address details
+     * @return array
+     */
+    function senderData()
+    {
+        $ips = explode(',', $this->ip);
+        //last ip address
+        $info = [];
+        foreach ($ips as $ip) {
+            $ip = trim($ip);
+            $url = "http://ip-api.com/json/$ip";
+            $content = file_get_contents($url);
+            $info[] = json_decode($content);
+        }
+        return $info;
     }
 
     function country()
