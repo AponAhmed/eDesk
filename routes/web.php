@@ -64,6 +64,7 @@ Route::group(['prefix' => 'edesk'], function () {
     // Routes for the Message model (resource routes first)
     Route::get('/', [MessageController::class, 'index'])->name('home');
     Route::get('/prompt', [MessageController::class, 'prompt'])->name('prompt');
+    Route::get('/generate-reply', [AiGenerate::class, 'generateReply'])->name('replyGenerator');
 
     Route::get('/messages/{status?}', [MessageController::class, 'index'])->name('messages.index');
     Route::get('/replies/{status?}', [ReplyController::class, 'index'])->name('messages.replies');
