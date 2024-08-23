@@ -13,6 +13,11 @@ class AiGenerate extends Controller
         $this->freebox($request->all());
     }
 
+    function generateReply(){
+        return view('replyGenerator');
+    }
+
+
     function freebox($data, $url = "ai-content-generator", $lang = "English")
     {
 
@@ -37,6 +42,7 @@ class AiGenerate extends Controller
 
         echo json_encode($responseArr);
     }
+    
 
 
     function sendPostRequest($url, $data, $headers)
