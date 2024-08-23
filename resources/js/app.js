@@ -456,6 +456,10 @@ window.generateReply = function (provider, btn, query, hints, outputTextArea, te
 
     let finalQuery = `${query} \n\n *follow below Hints:*\n No needed Signature part for email, like 'Best regards', '[Your Company Name]'.. . \n ${hints}`;
 
+
+    // console.log(finalQuery);
+    // return;
+
     let ai;
     switch (AiName) {
         case 'gemini':
