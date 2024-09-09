@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Canned;
 use App\Models\Settings;
 use Illuminate\Http\Request;
 
@@ -13,8 +14,10 @@ class AiGenerate extends Controller
         $this->freebox($request->all());
     }
 
-    function generateReply(){
-        return view('replyGenerator');
+    function generateReply()
+    {
+        $hints = CannedController::getHints();
+        return view('replyGenerator', array('hints' => $hints));
     }
 
 
@@ -42,7 +45,7 @@ class AiGenerate extends Controller
 
         echo json_encode($responseArr);
     }
-    
+
 
 
     function sendPostRequest($url, $data, $headers)
