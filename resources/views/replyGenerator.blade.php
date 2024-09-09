@@ -113,7 +113,7 @@
                                         <select id="tone"
                                             class="block w-full py-[2px] px-2 text-xs bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-950">
                                             @php
-                                                $selectedOption = \App\Models\Settings::get('ai_lang', 'Formal'); // Assume $selectedOption contains the value of the selected option
+                                                $selectedOption = \App\Models\Settings::get('ai_tone', 'Formal'); // Assume $selectedOption contains the value of the selected option
                                                 $options = [
                                                     'Formal' => 'Formal',
                                                     'Professional' => 'Professional',
