@@ -168,7 +168,7 @@
                                                 class="block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500  dark:bg-gray-800 dark:text-gray-300 dark:border-gray-950">
                                                 <option value="" disabled>Select an option</option>
                                                 @php
-                                                    $selectedOption = $Settings::get('ai_lang', 'Formal'); // Assume $selectedOption contains the value of the selected option
+                                                    $selectedOption = $Settings::get('ai_tone', 'Formal'); // Assume $selectedOption contains the value of the selected option
                                                     $options = [
                                                         'Formal' => 'Formal',
                                                         'Professional' => 'Professional',
