@@ -213,12 +213,13 @@ class MessageController extends Controller
         $plainText = "$prefix\n\n" . $this->getBodyText($id);
 
         $plainText = $this->removeMobileNumbersAndEmails($plainText);
+        $hints = CannedController::getHints();
 
         $emails = [];
         $emails[Settings::get('admin_email')] = Settings::get('admin_name');
         $emails['admin@siatexltd.com'] = "Admin";
 
-        return view('reply', array('id' => $id, 'emails' => $emails, 'query' => $plainText));
+        return view('reply', array('id' => $id, 'emails' => $emails, 'query' => $plainText, 'hints' => $hints));
     }
 
     function removeMobileNumbersAndEmails($text)
