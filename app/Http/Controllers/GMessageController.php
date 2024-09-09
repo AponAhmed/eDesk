@@ -323,11 +323,12 @@ class GMessageController extends Controller
         $prefix = Settings::get('ai_prompt_prefix', 'Write a reply in short-sentence to this email using the hints below:');
         $plainText = "$prefix\n\n" . $this->getBodyText($id);
 
+        $hints = CannedController::getHints();
         $plainText = $this->removeMobileNumbersAndEmails($plainText);
 
         $emails = [];
         $emails[Settings::get('gadmin_email')] = Settings::get('gadmin_name');
-        return view('reply', array('id' => $id, 'emails' => $emails, 'query' => $plainText));
+        return view('reply', array('id' => $id, 'emails' => $emails, 'query' => $plainText, 'hints' => $hints));
     }
 
     function removeMobileNumbersAndEmails($text)
