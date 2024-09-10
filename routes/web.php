@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AiGenerate;
+use App\Http\Controllers\CannedController;
 use App\Utilities\GoogleApiClient;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,9 @@ Route::get('/test', function () {
 });
 
 Route::post('/ai', [AiGenerate::class, 'generate'])->name('ai'); //AI
+Route::post('/store-canned', [CannedController::class, 'store'])->name('cannedStore'); //AI
+Route::delete('/canned/{id}', [CannedController::class, 'destroy']);
+
 
 //Message Actions
 Route::middleware('auth')->get('/get-count', function () {
