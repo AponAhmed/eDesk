@@ -70,3 +70,25 @@
     background: var(--primary-color);
     color: #fff;
 }
+
+// Dark Mode 
+
+.dark .confirm-modal-header {
+    border-bottom: 1px solid #000;
+}
+
+.dark .confirm-modal-body {
+    background: rgba(0, 0, 0, .6);
+}
+
+.dark .confirm-modal {
+    border-color: #000;
+}
+
+.dark .confirm-modal-header .confirm-modal-title {
+    color: #999;
+}
+
+.dark .confirm-modal-message {
+    color: #999;
+}
