@@ -369,7 +369,7 @@
     <script>
         function generateReplyhere(_this) {
             let queryVDom = document.createElement('textarea');
-            queryVDom.value = queryPrefix.value + " " + query.value;
+            queryVDom.value = queryPrefix.value + " " + query.value;           
             window.generateReply(aiProvider.value, _this, queryVDom, hint, message, temparature.value, language.value, tone
                 .value);
 
