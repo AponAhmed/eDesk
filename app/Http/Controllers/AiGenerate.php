@@ -14,6 +14,19 @@ class AiGenerate extends Controller
         $this->freebox($request->all());
     }
 
+    function getInfo(Request $request)
+    {
+
+        echo Settings::get($request->get('about'), "");
+    }
+
+    public static function getAboutInfo(): string
+    {
+        $aboutField = Settings::get('ai_about', 'ai_about_company');
+        return Settings::get($aboutField, '');
+    }
+
+
     function generateReply()
     {
         $hints = CannedController::getHints();
