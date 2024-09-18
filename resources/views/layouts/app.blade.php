@@ -18,7 +18,7 @@
             ai: "{!! \App\Models\Settings::get('ai_provider', '') !!}",
             key: "{!! \App\Models\Settings::get('ai_api_key', '') !!}",
             model: "{!! \App\Models\Settings::get('ai_data_model', 'gemini-pro') !!}",
-            about: `{!! str_replace(["\r\n", "\n", "\r"], "\\n", addslashes(\App\Models\Settings::get('ai_about_company', ''))) !!}`,
+            about: `{!! str_replace(["\r\n", "\n", "\r"], "\\n", addslashes(\App\Http\Controllers\AiGenerate::getAboutInfo())) !!}`,
             temperature: "{!! \App\Models\Settings::get('ai_temperature', '0.7') !!}",
             signPrefix: "{!! str_replace(["\r\n", "\n", "\r"], "\\n", addslashes(\App\Models\Settings::get('ai_signeture_prefix', ''))) !!}"
         };
