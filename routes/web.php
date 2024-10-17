@@ -38,6 +38,7 @@ Route::get('/test', function () {
 
 Route::post('/ai', [AiGenerate::class, 'generate'])->name('ai'); //AI
 Route::post('/ai/company-info', [AiGenerate::class, 'getInfo'])->name('aiinfo'); //
+Route::post('/ai/delete-file', [AiGenerate::class, 'getInfoRemove'])->name('aiinfo-remove'); //
 Route::post('/store-canned', [CannedController::class, 'store'])->name('cannedStore'); //AI
 Route::delete('/canned/{id}', [CannedController::class, 'destroy']);
 
