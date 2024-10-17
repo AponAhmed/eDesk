@@ -20,7 +20,48 @@ class AiGenerate extends Controller
         echo Settings::get($request->get('about'), "");
     }
 
-    public static function getAboutInfo(): string
+    public function getInfoRemove(Request $request)
+    {
+        // Extract delete file name from the request
+        $deleteFileName = $request->input('file'); // 'file' is the key from the Axios request
+
+        // Get current field and all fields from settings
+        $currentField = Settings::get('ai_about', 'ai_about_company');
+        $allFields = Settings::get('ai_about_fields', 'ai_about_company,ai_about_company_faq,ai_about_company_new');
+
+        // Check if the file to delete is the current field
+        if ($deleteFileName === $currentField) {
+            // If the file to delete is the current field, reset to default
+            Settings::set('ai_about', 'ai_about_company');
+        }
+
+        // Split allFields by comma into an array
+        $allFieldsArray = explode(',', $allFields);
+
+        // Remove the deleteFileName from the array if it exists
+        if (($key = array_search($deleteFileName, $allFieldsArray)) !== false) {
+            unset($allFieldsArray[$key]);
+        }
+
+        // Implode the array back to a comma-separated string
+        $updatedFields = implode(',', $allFieldsArray);
+
+        // Update the 'ai_about_fields' with the new list
+        Settings::set('ai_about_fields', $updatedFields);
+
+        // Finally, remove the setting for the delete file name
+        $deleteResult = Settings::remove($deleteFileName);
+
+        // Return success based on the result of the removal
+        if ($deleteResult) {
+            return response()->json(['success' => true], 200);
+        } else {
+            return response()->json(['success' => false], 500);
+        }
+    }
+
+
+    public static function getAboutInfo()
     {
         $aboutField = Settings::get('ai_about', 'ai_about_company');
         return Settings::get($aboutField, '');
