@@ -68,10 +68,12 @@
                                     option:</label>
                                 <select id="aiProvider" name="settings[ai_provider]" id="select"
                                     class="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-blue-500  dark:bg-gray-800 dark:text-gray-300 dark:border-gray-950">
-                                    <option class="dark:text-gray-300" value="freebox" @if ($Settings::get('ai_provider', 'gemini') === 'freebox') selected @endif>Open AI
+                                    <option class="dark:text-gray-300" value="freebox"
+                                        @if ($Settings::get('ai_provider', 'gemini') === 'freebox') selected @endif>Open AI
                                         (Freebox)
                                     </option>
-                                    <option class="dark:text-gray-300" value="gemini" @if ($Settings::get('ai_provider', 'gemini') === 'gemini') selected @endif>Gemini</option>
+                                    <option class="dark:text-gray-300" value="gemini"
+                                        @if ($Settings::get('ai_provider', 'gemini') === 'gemini') selected @endif>Gemini</option>
                                 </select>
                             </div>
                             <hr class="my-4 border-gray-300 dark:border-gray-700">
@@ -183,7 +185,8 @@
                                         <div class="flex-1 md:ml-4 ml-0">
                                             <select name="settings[ai_tone]"
                                                 class="block w-full p-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500  dark:bg-gray-800 dark:text-gray-300 dark:border-gray-950">
-                                                <option class="dark:text-gray-300" value="" disabled>Select an option</option>
+                                                <option class="dark:text-gray-300" value="" disabled>Select an option
+                                                </option>
                                                 @php
                                                     $selectedOption = $Settings::get('ai_tone', 'Formal'); // Assume $selectedOption contains the value of the selected option
                                                     $options = [
@@ -261,25 +264,71 @@
                                     <div class="flex-column">
                                         <div class="flex mb-1">
                                             <label
-                                                class=" block  text-gray-700 font-weight-bold dark:text-gray-300">Information
-                                                About your Company </label>
+                                                class=" block  text-gray-700 font-weight-bold dark:text-gray-300">Company
+                                                Info</label>
                                             @php
+                                                $fields = $Settings::get(
+                                                    'ai_about_fields',
+                                                    'ai_about_company,ai_about_company_faq,ai_about_company_new',
+                                                );
+                                                $fieldsArray = explode(',', $fields);
                                                 $aboutField = $Settings::get('ai_about', 'ai_about_company');
                                             @endphp
                                             <select id="aboutSwitch" name="settings[ai_about]"
-                                                class="ml-4 px-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500  dark:bg-gray-800 dark:text-gray-300 dark:border-gray-950">
-                                                <option {{ $aboutField == 'ai_about_company' ? 'selected' : '' }}
-                                                    class="dark:text-gray-300" value="ai_about_company">Default
-                                                </option>
-                                                <option {{ $aboutField == 'ai_about_company_faq' ? 'selected' : '' }}
-                                                    class="dark:text-gray-300" value="ai_about_company_faq">Faq
-                                                </option>
-                                                <option {{ $aboutField == 'ai_about_company_new' ? 'selected' : '' }}
-                                                    class="dark:text-gray-300" value="ai_about_company_new">New Info
-                                                </option>
+                                                class="ml-4 px-2 py-1 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-blue-500  dark:bg-gray-800 dark:text-gray-300 dark:border-gray-950">
+                                                @foreach ($fieldsArray as $field)
+                                                    @php
+                                                        $fieldVisible = str_replace('ai_about_company', '', $field);
+                                                        $fieldVisible = trim($fieldVisible, '_');
+                                                        $fieldVisible = empty($fieldVisible)
+                                                            ? 'Default'
+                                                            : $fieldVisible;
+                                                        $fieldVisible = str_replace('_', ' ', $fieldVisible);
+                                                    @endphp
+                                                    <option {{ $aboutField == $field ? 'selected' : '' }}
+                                                        class="dark:text-gray-300" value="{{ $field }}">
+                                                        {{ ucfirst($fieldVisible) }}
+                                                    </option>
+                                                @endforeach
                                             </select>
+                                            <div class="flex items-center ml-2" id="newfieldUi">
+                                                <input type="text"
+                                                    class="border rounded px-2 py-1  dark:bg-gray-800 dark:text-gray-300 dark:border-gray-950"
+                                                    placeholder="New File" id="newFileName">
+                                                <button id="newFieldAdd" type="button" class="px-2">
+                                                    <svg class="w-6 h-6 text-gray-700 dark:text-gray-300"
+                                                        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                                        <path fill="none" stroke="currentColor" stroke-linecap="round"
+                                                            stroke-linejoin="round" stroke-width="32"
+                                                            d="M256 112v288M400 256H112" />
+                                                    </svg>
+                                                </button>
+                                                <button data-file="{{ $aboutField }}" id="deleteFile" type="button"
+                                                    class="px-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                        class="w-5 h-5 text-gray-700 dark:text-gray-300"
+                                                        viewBox="0 0 512 512">
+                                                        <path
+                                                            d="M112 112l20 320c.95 18.49 14.4 32 32 32h184c17.67 0 30.87-13.51 32-32l20-320"
+                                                            fill="none" stroke="currentColor" stroke-linecap="round"
+                                                            stroke-linejoin="round" stroke-width="32" />
+                                                        <path stroke="currentColor" stroke-linecap="round"
+                                                            stroke-miterlimit="10" stroke-width="32" d="M80 112h352" />
+                                                        <path
+                                                            d="M192 112V72h0a23.93 23.93 0 0124-24h80a23.93 23.93 0 0124 24h0v40M256 176v224M184 176l8 224M328 176l-8 224"
+                                                            fill="none" stroke="currentColor" stroke-linecap="round"
+                                                            stroke-linejoin="round" stroke-width="32" />
+                                                    </svg>
+                                                </button>
+                                            </div>
                                             <label id="waitMsg" class="hidden ml-2 text-red-400">Please Wait...</label>
+
+
                                         </div>
+                                        <input type="hidden" value="{{ $fields }}"
+                                            name="settings[ai_about_fields]" id="ai_about_fields">
+
+
                                         <textarea id="aboutData" rows="12" name="settings[{{ $aboutField }}]"
                                             class="scrollbar-thin p-2 rounded border border-gray-300 bg-transparent w-full h-full  dark:bg-gray-800 dark:text-gray-300 dark:border-gray-950"
                                             placeholder="About Your Company"><?php echo $Settings::get($aboutField, ''); ?></textarea>
@@ -412,6 +461,7 @@
             // Your JavaScript goes here
             let waitMsg = document.getElementById("waitMsg");
             let aboutSwitch = document.getElementById("aboutSwitch");
+            let deleteFile = document.getElementById("deleteFile");
             let textField = document.getElementById('aboutData');
             aboutSwitch.addEventListener("change", () => {
                 waitMsg.classList.remove("hidden");
@@ -423,12 +473,74 @@
                     about: aboutSwitch.value
                 }).then(response => {
                     //aboutData value will be set the response data 
+                    deleteFile.setAttribute('data-file', aboutSwitch.value);
                     textField.value = response.data;
                     waitMsg.classList.add("hidden");
                 }).catch(error => {
                     console.error(error);
                 });
             });
+
+            document.getElementById('deleteFile').addEventListener('click', function() {
+                // Get the file identifier from the data attribute
+                let fileIdentifier = this.getAttribute('data-file');
+
+                // Ask for confirmation
+                if (confirm('Are you sure you want to delete this file?')) {
+                    // Proceed with the delete request if confirmed
+                    axios.post('/ai/delete-file', {
+                            file: fileIdentifier
+                        })
+                        .then(function(response) {
+                            // Handle success response
+                            alert('File deleted successfully!');
+                            if (response.data.success) {
+                                location.reload();
+                            }
+                        })
+                        .catch(function(error) {
+                            // Handle error response
+                            alert('Failed to delete the file.');
+                            console.error(error);
+                        });
+                }
+            });
+
+
+        });
+
+        document.getElementById('newFieldAdd').addEventListener('click', function() {
+            let textField = document.getElementById('aboutData');
+            textField.value = "";
+            // Get the input value from input#newFileName
+            let newFileName = document.getElementById('newFileName').value.trim();
+            document.getElementById('newFileName').value = "";
+            // If the input value is empty, do nothing
+            if (newFileName === '') return;
+
+            // Replace multiple/single spaces with underscores and add the prefix
+            let formattedValue = "ai_about_company_" + newFileName.replace(/\s+/g, '_');
+
+            // Append the formatted value to input#ai_about_fields, separated by a comma
+            let aiAboutFields = document.getElementById('ai_about_fields');
+            if (aiAboutFields.value) {
+                aiAboutFields.value += ',' + formattedValue;
+            } else {
+                aiAboutFields.value = formattedValue;
+            }
+
+            // Create a new option for select#aboutSwitch
+            let aboutSwitch = document.getElementById('aboutSwitch');
+            let newOption = document.createElement('option');
+            newOption.value = formattedValue; // value uses the formatted string
+            newOption.textContent = newFileName; // textContent shows the original input
+
+            // Append the new option to the select element
+            aboutSwitch.appendChild(newOption);
+            // Set the newly added option as selected
+            aboutSwitch.value = formattedValue;
+            textField.name = 'settings[' + formattedValue + ']';
+
         });
     </script>
 
